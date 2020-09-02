@@ -4,8 +4,9 @@
 
 <script>
 import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-// Vue and Component must always be imported from the vue-property-decorater. If you are going to need Props and Watches, it must bi imported from the vue-property-decorator.
+// Vue and Component must always be imported from the vue-property-decorater. If you are going to need Props and Watches, it must be imported from the vue-property-decorator.
 
+// @Component must always be written directly above export default.
 @Component({
   // In this components object, you must add the nested components that you use.
   components: {
