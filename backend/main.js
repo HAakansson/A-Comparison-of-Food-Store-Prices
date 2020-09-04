@@ -1,14 +1,12 @@
 const AxfoodHarvester = require("./harvesters/AxfoodHarvester");
 
 (async () => {
-  let data = await AxfoodHarvester.getCategories();
-  data.children.forEach((c) => {
-    c.children.forEach((cc) => {
-      console.log(cc);
-    });
-  });
-  // console.log(data);
+  // let arr = await AxfoodHarvester.getAllProducts()
+  // console.log(arr);
+  // console.log(arr.length);
 
-  // let data = await AxfoodHarvester.getProducts("Apotek");
-  // console.log(data);
+  // let count = 1;
+  // arr.forEach(e => console.log(e, count++))
+
+  AxfoodHarvester.getCategories("www.willys.se");
 })();
