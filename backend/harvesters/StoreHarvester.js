@@ -1,14 +1,14 @@
 module.exports = class StoreHarvester {
-
-  static async getAllProducts() {
+  
+  async getAllProducts() {
     // throw new Error("You have to implement the method getAllProduts");
   }
 
-  static async getCategories() {
+  async getCategories() {
     // throw new Error("You have to implement the method getCategories");
   }
 
-  static async getProduct() {
+  async getProduct() {
     // throw new Error("You have to implement the method getProduct");
   }
 };
