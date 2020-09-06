@@ -66,13 +66,17 @@ module.exports = class AxfoodScrubber extends Scrubber {
       let information = {};
       // Seems we need detailed product info for this...
       // (one fetch per product - lots of extra time :( )
-      let rawData;
-      rawData = await fetch(
+      let data;
+      let rawData = await fetch(
         `https://${this.store}/axfood/rest/p/${x.code}`
       ).catch((err) => {
         console.log(err);
       });
-      let data = await rawData.json();
+      // If article number in deep article info does not match the article number from shallow article info, this will stop the operation and go to the next iteration, check scrubber class for more info.
+      if (rawData.status === 400) {
+        return;
+      }
+      data = await rawData.json();
       information.country_of_origin = data.originCountry
         ? data.originCountry
         : data.tradeItemCountryOfOrigin;

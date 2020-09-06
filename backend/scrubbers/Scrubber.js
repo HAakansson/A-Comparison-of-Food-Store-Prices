@@ -3,7 +3,6 @@ const DataBaseHelper = require("../DataBaseHelper");
 module.exports = class Scrubber {
   constructor(store) {
     this.store = store;
-    this.faultyCodes = ["101208360_ST", "101290126_ST"];
   }
   async scrubOne(product) {
     let scrubbed = {};
@@ -13,7 +12,8 @@ module.exports = class Scrubber {
       let scrubFunc = tschema[key];
       scrubbed[key] = await scrubFunc(product);
     }
-    return scrubbed;
+    // This is the extra check when an article number is faulty.
+    return scrubbed["extra_info"] ? scrubbed : undefined;
   }
 
   async scrubAll(products) {
@@ -22,15 +22,14 @@ module.exports = class Scrubber {
     );
     // let scrubbed = [];
     for (let product of products) {
-      if (this.faultyCodes.includes(product.code)) {
-        continue;
-      }
       if (await DataBaseHelper.checkIfProductExists(product)) {
         continue;
       }
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
       let scrubbedProduct = await this.scrubOne(product);
-      DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+      if (scrubbedProduct) {
+        DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+      }
     }
     // return scrubbed;
   }
