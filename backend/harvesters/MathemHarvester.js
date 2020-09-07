@@ -52,7 +52,16 @@ module.exports = class MathemHarvester extends StoreHarvester {
 
     //console.log(raw.products);
 
-    return (await raw.json()).products;
+    return (await raw.json()).products.map(element => {
+        return {name: element.name,
+            cat: element.categoryAncestry.map(e => {
+            return e.name}),
+
+            badges: element.badges.map(e => {
+            return e.name}),
+        }
+        
+    });
 }
 
   static async getProducts(categoryURL) {
