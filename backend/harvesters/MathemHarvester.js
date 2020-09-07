@@ -67,7 +67,7 @@ module.exports = class MathemHarvester extends StoreHarvester {
       return {name: product.name, 
               categories: product.categoryAncestry,
               brand: product.brand.name,
-              country_of_origin: product.origin,
+              country_of_origin: product.origin || "Unknown",
               desc: product.fullName,
               displayvolume: product.quantity,
               store: "Mathem",
