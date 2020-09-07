@@ -55,9 +55,12 @@ module.exports = class DataBaseHelper {
       );
       if (result) {
         let productId = result.lastID;
+        let potentialId = await this.checkIfDietaryRestrictionExists(product, productId);
         await this.insertDataIntoProductsXCategories(product, productId);
         await this.insertDataIntoImageTable(product);
-        await this.insertDataIntoDietaryTable(product);
+
+        potentialId ? await this.insertDataIntoDietaryTable(product, potentialId) : await this.insertDataIntoDietaryTable(product);
+   
       }
     }
   }
@@ -96,25 +99,60 @@ module.exports = class DataBaseHelper {
     }
   }
 
-  static async insertDataIntoDietaryTable(product) {
-    let result = await db.run(
+
+  static async checkIfDietaryRestrictionExists(product, productId) {
+    let dietaryRestrictionExist = await db.get(
+      /*sql*/ `SELECT id FROM Dietary_Restrictions WHERE organic = $organic AND gluten = $gluten AND vegetarian = $vegetarian AND vegan = $vegan AND lactosefree = $lactosefree`,
+      {
+        $organic: product.organic,
+        $gluten: product.gluten,
+        $vegetarian: product.extra_info.vegetarian,
+        $vegan: product.extra_info.vegan,
+        $lactosefree: product.lactosefree,
+      }
+    );
+    return dietaryRestrictionExist ? dietaryRestrictionExist.id : false;
+  }
+
+
+
+  
+
+
+  static async insertDataIntoDietaryTable(product, potentialId) {
+    if (potentialId)
+    {
+      db.run(
+        /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
+        {
+          $dietary_restrictions_id: potentialId,//result.lastID,
+          $code: product.code,
+        }
+      );
+    }
+    else {
+       let result = await db.run(
       /*sql*/ `INSERT INTO Dietary_Restrictions (organic, gluten, vegetarian, vegan, lactosefree) VALUES ($organic, $gluten, $vegetarian, $vegan, $lactosefree)`,
       {
         $organic: product.organic,
         $gluten: product.gluten,
         $vegetarian: product.extra_info.vegetarian,
-        $vegan: product.vegan,
+        $vegan: product.extra_info.vegan,
         $lactosefree: product.lactosefree,
       }
-    );
-    if (result) {
-      db.run(
-        /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
+       );
+      
+      if (result) {
+        db.run(
+          /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
           $dietary_restrictions_id: result.lastID,
           $code: product.code,
         }
       );
     }
+    }
+   
+  
   }
 };

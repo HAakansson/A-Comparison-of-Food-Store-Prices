@@ -26,9 +26,17 @@ module.exports = class Scrubber {
         continue;
       }
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
-      let scrubbedProduct = await this.scrubOne(product);
+      let scrubbedProduct;
+
+      try {
+        scrubbedProduct = await this.scrubOne(product);
+      } catch (error) {
+        console.log(product);
+        console.log(error);
+      }
+  
       if (scrubbedProduct) {
-        DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+          DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
       }
     }
     // return scrubbed;

@@ -60,8 +60,6 @@ module.exports = class AxfoodScrubber extends Scrubber {
       x.labels.length > 0 ? x.labels.includes("ecological") : false,
     gluten: (x) =>
       x.labels.length > 0 ? x.labels.includes("glutenfree") : false,
-    vegan: (x) =>
-      x.name.includes("vegan") ? true : x.name.includes("Vegan") ? true : false,
     extra_info: async (x) => {
       let information = {};
       // Seems we need detailed product info for this...
@@ -84,8 +82,10 @@ module.exports = class AxfoodScrubber extends Scrubber {
         information.country_of_origin = "Unknown";
       }
       information.desc = data.description;
+      information.vegan = data.name.includes("vegan") || data.name.includes("Vegan") || data.dietTypeInformation.includes("Vegan") || data.dietTypeInformation.includes("vegan");
+      
       information.vegetarian = data.breadCrumbs.some((x) =>
-        x.name.match(/vegetariskt?/gi)
+        x.name.match(/vegetariskt?/gi) || data.dietTypeInformation.includes("Vegetarian") || data.dietTypeInformation.includes("vegetarian") || information.vegan == true
       );
       data.breadCrumbs.pop();
       information.categories = data.breadCrumbs.map((x) => {
