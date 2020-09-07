@@ -1,5 +1,6 @@
 const StoreHarvester = require("./StoreHarvester");
 const fetch = require("node-fetch");
+const fs = require('fs');
 
 module.exports = class MathemHarvester extends StoreHarvester {
   constructor(categoriesTranslation, size = 1000) {
@@ -8,6 +9,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
     // }
     super(categoriesTranslation, (size = 1000));
   }
+
+  
 
   static async getCategories() {
     let raw = await fetch(
@@ -24,6 +27,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
 
     return mycategories;
   }
+
+
 
   static async getProductsPerCategory(id, number) {
     /*
@@ -78,7 +83,11 @@ module.exports = class MathemHarvester extends StoreHarvester {
   }
 
   static async getAllProducts() {
-    
+
+    function writeToFile(fileName, data) {
+      fs.writeFileSync(fileName, JSON.stringify(data, null, '  '), 'utf-8');
+    }
+
     let categories = await this.getCategories();
     let allProducts = {};
 
@@ -87,7 +96,9 @@ module.exports = class MathemHarvester extends StoreHarvester {
     for (category of categories) {
       let products = await MathemHarvester.getProductsPerCategory(category.id, category.productCount);
       allProducts[category.id] = products;
-    } 
+    }
+
+    writeToFile('mathem.json', allProducts);
 
     return allProducts;
   }
