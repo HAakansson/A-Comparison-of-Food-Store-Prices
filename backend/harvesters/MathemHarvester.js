@@ -8,76 +8,87 @@ module.exports = class MathemHarvester extends StoreHarvester {
     // }
     super(categoriesTranslation, (size = 1000));
   }
-  /*
-  static bustCache() {
-    return "?avoidCache=" + (Math.random() + "").split(".")[1];
-  }
-  */
 
   static async getCategories() {
     let raw = await fetch(
       "https://api.mathem.io/ecom-navigation/noauth/v2/menu/10"
     );
-    //let mycategories = raw["categories"];
-    return await raw.json();
-  }
 
-  static async getCleanCategories() {
-
-    let mycategories = await this.getCategories();
-
-    let categories = await mycategories["categories"];
-
-    /*
-
-    await categories.array.forEach(element => { 
-
-        console.log(element.id, element.productCount)
-        
-    });
-    */
-
-    //console.log(categories)
-
-    return categories;
-
-  }
-
-  static async getProductsPerCategory() {
-
+    let data = await raw.json()
+    let mycategories = data["categories"];
     
-    //https://api.mathem.io/product-search/noauth/search/products/10/categorytag/frukt-o-gront?size=535&storeId=10&searchType=category
+    mycategories = mycategories.map(item => {
 
-    let raw = await fetch("https://api.mathem.io/product-search/noauth/search/products/10/categorytag/frukt-o-gront?size=20&storeId=10&searchType=category");
-
-    //console.log(raw.products);
-
-    return (await raw.json()).products.map(element => {
-        return {name: element.name,
-            cat: element.categoryAncestry.map(e => {
-            return e.name}),
-
-            badges: element.badges.map(e => {
-            return e.name}),
-        }
-        
+      return {id: item.id, productCount: item.productCount}
     });
-}
 
-  static async getProducts(categoryURL) {
-    let raw = await fetch(
-      "https://www.willys.se/c/" +
-        categoryURL +
-        this.bustCache() +
-        "&size=10000"
-    );
-    return (await raw.json()).results;
+    return mycategories;
+  }
+
+  static async getProductsPerCategory(id, number) {
+    /*
+      name
+      brand
+      country_of_origin
+      desc
+      display/volume
+      store
+      unit_price
+      comparator
+      Comparison_price
+      FK_dietary_Restrictions
+        .....
+      FK_image_id
+        image_url
+        thumbnail_url
+
+      additional:
+        code
+        display_volume
+    */
+    //supplier??
+
+    let base = "https://api.mathem.io/product-search/noauth/search/products/10/";
+
+    let numberofproducts = "?size=" + number;
+
+    let productcategory = "categorytag/"+ id;
+
+    let raw = await fetch(base + productcategory + numberofproducts);
+    
+    let myproducts = await raw.json()
+
+    myproducts = myproducts.products.map(product => {
+      return {name: product.name, 
+              categories: product.categoryAncestry,
+              brand: product.brand.name,
+              country_of_origin: product.origin,
+              desc: product.fullName,
+              displayvolume: product.quantity,
+              store: "Mathem",
+              unit_price: product.price,
+              comparison_price: product.comparisonPrice,
+              comparator: product.comparisonUnit, 
+              dietary_restr: product.badges,
+              image: product.images.ORIGINAL,
+              code: product.id
+      }
+    })
+    return myproducts;
   }
 
   static async getAllProducts() {
-    // NOT WRITTEN YET!
+    
     let categories = await this.getCategories();
-    // now loop basic categories and getProducts for each category...
-    // how would you write this?
+    let allProducts = {};
+
+    var category;
+
+    for (category of categories) {
+      let products = await MathemHarvester.getProductsPerCategory(category.id, category.productCount);
+      allProducts[category.id] = products;
+    } 
+
+    return allProducts;
   }
 };
