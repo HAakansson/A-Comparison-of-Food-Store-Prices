@@ -55,12 +55,16 @@ module.exports = class DataBaseHelper {
       );
       if (result) {
         let productId = result.lastID;
-        let potentialId = await this.checkIfDietaryRestrictionExists(product, productId);
+        let potentialId = await this.checkIfDietaryRestrictionExists(
+          product,
+          productId
+        );
         await this.insertDataIntoProductsXCategories(product, productId);
         await this.insertDataIntoImageTable(product);
 
-        potentialId ? await this.insertDataIntoDietaryTable(product, potentialId) : await this.insertDataIntoDietaryTable(product);
-   
+        potentialId
+          ? await this.insertDataIntoDietaryTable(product, potentialId)
+          : await this.insertDataIntoDietaryTable(product);
       }
     }
   }
@@ -99,7 +103,6 @@ module.exports = class DataBaseHelper {
     }
   }
 
-
   static async checkIfDietaryRestrictionExists(product, productId) {
     let dietaryRestrictionExist = await db.get(
       /*sql*/ `SELECT id FROM Dietary_Restrictions WHERE organic = $organic AND gluten = $gluten AND vegetarian = $vegetarian AND vegan = $vegan AND lactosefree = $lactosefree`,
@@ -114,45 +117,36 @@ module.exports = class DataBaseHelper {
     return dietaryRestrictionExist ? dietaryRestrictionExist.id : false;
   }
 
-
-
-  
-
-
   static async insertDataIntoDietaryTable(product, potentialId) {
-    if (potentialId)
-    {
+    if (potentialId) {
       db.run(
         /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
-          $dietary_restrictions_id: potentialId,//result.lastID,
+          $dietary_restrictions_id: potentialId, //result.lastID,
           $code: product.code,
         }
       );
-    }
-    else {
-       let result = await db.run(
-      /*sql*/ `INSERT INTO Dietary_Restrictions (organic, gluten, vegetarian, vegan, lactosefree) VALUES ($organic, $gluten, $vegetarian, $vegan, $lactosefree)`,
-      {
-        $organic: product.organic,
-        $gluten: product.gluten,
-        $vegetarian: product.extra_info.vegetarian,
-        $vegan: product.extra_info.vegan,
-        $lactosefree: product.lactosefree,
-      }
-       );
-      
+    } else {
+      let result = await db.run(
+        /*sql*/ `INSERT INTO Dietary_Restrictions (organic, gluten, vegetarian, vegan, lactosefree) VALUES ($organic, $gluten, $vegetarian, $vegan, $lactosefree)`,
+        {
+          $organic: product.organic,
+          $gluten: product.gluten,
+          $vegetarian: product.extra_info.vegetarian,
+          $vegan: product.extra_info.vegan,
+          $lactosefree: product.lactosefree,
+        }
+      );
+
       if (result) {
         db.run(
           /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
-        {
-          $dietary_restrictions_id: result.lastID,
-          $code: product.code,
-        }
-      );
+          {
+            $dietary_restrictions_id: result.lastID,
+            $code: product.code,
+          }
+        );
+      }
     }
-    }
-   
-  
   }
 };
