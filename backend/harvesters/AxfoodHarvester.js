@@ -17,7 +17,7 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
       `https://${this.store}/leftMenu/categorytree${this.bustCache()}`
     );
     data = await data.json();
-    let categoriesArrayForTheDB = []; // Cointaints ALL the categories that goes in to the DB.
+    let categoriesArrayForTheDB = []; // Cointains ALL the categories that goes in to the DB.
     let categoriesArrayForGetProducts = []; /* Only containts the top layer of categories that is going to be used to get all the products. */
     categoriesArrayForTheDB.push({
       name: data.title,

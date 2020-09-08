@@ -27,9 +27,14 @@ module.exports = class DataBaseHelper {
   }
 
   static async checkIfProductExists(product) {
-    let productExists = await db.get(
-      /*sql*/ `SELECT * FROM Product WHERE code = $code`,
-      { $code: product.code }
+    let productExists;
+    productExists = await db.get(
+      /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store AND unit_price = $unit_price`,
+      {
+        $code: product.code,
+        $store: product.store,
+        $unit_price: product.potentialPromotions.length < 0 ? product.potentialPromotions[0].price.value : product.priceValue,
+      }
     );
     return productExists ? true : false;
   }
@@ -55,12 +60,16 @@ module.exports = class DataBaseHelper {
       );
       if (result) {
         let productId = result.lastID;
-        let potentialId = await this.checkIfDietaryRestrictionExists(product, productId);
+        let potentialId = await this.checkIfDietaryRestrictionExists(
+          product,
+          productId
+        );
         await this.insertDataIntoProductsXCategories(product, productId);
         await this.insertDataIntoImageTable(product);
 
-        potentialId ? await this.insertDataIntoDietaryTable(product, potentialId) : await this.insertDataIntoDietaryTable(product);
-   
+        potentialId
+          ? await this.insertDataIntoDietaryTable(product, potentialId)
+          : await this.insertDataIntoDietaryTable(product);
       }
     }
   }
@@ -89,7 +98,7 @@ module.exports = class DataBaseHelper {
       }
     );
     if (result) {
-      db.run(
+     await db.run(
         /*sql*/ `UPDATE Product SET image_id = $image_id WHERE code = $code`,
         {
           $image_id: result.lastID,
@@ -98,7 +107,6 @@ module.exports = class DataBaseHelper {
       );
     }
   }
-
 
   static async checkIfDietaryRestrictionExists(product, productId) {
     let dietaryRestrictionExist = await db.get(
@@ -114,45 +122,36 @@ module.exports = class DataBaseHelper {
     return dietaryRestrictionExist ? dietaryRestrictionExist.id : false;
   }
 
-
-
-  
-
-
   static async insertDataIntoDietaryTable(product, potentialId) {
-    if (potentialId)
-    {
-      db.run(
+    if (potentialId) {
+     await db.run(
         /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
-          $dietary_restrictions_id: potentialId,//result.lastID,
+          $dietary_restrictions_id: potentialId, //result.lastID,
           $code: product.code,
         }
       );
-    }
-    else {
-       let result = await db.run(
-      /*sql*/ `INSERT INTO Dietary_Restrictions (organic, gluten, vegetarian, vegan, lactosefree) VALUES ($organic, $gluten, $vegetarian, $vegan, $lactosefree)`,
-      {
-        $organic: product.organic,
-        $gluten: product.gluten,
-        $vegetarian: product.extra_info.vegetarian,
-        $vegan: product.extra_info.vegan,
-        $lactosefree: product.lactosefree,
-      }
-       );
-      
-      if (result) {
-        db.run(
-          /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
+    } else {
+      let result = await db.run(
+        /*sql*/ `INSERT INTO Dietary_Restrictions (organic, gluten, vegetarian, vegan, lactosefree) VALUES ($organic, $gluten, $vegetarian, $vegan, $lactosefree)`,
         {
-          $dietary_restrictions_id: result.lastID,
-          $code: product.code,
+          $organic: product.organic,
+          $gluten: product.gluten,
+          $vegetarian: product.extra_info.vegetarian,
+          $vegan: product.extra_info.vegan,
+          $lactosefree: product.lactosefree,
         }
       );
+
+      if (result) {
+       await db.run(
+          /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
+          {
+            $dietary_restrictions_id: result.lastID,
+            $code: product.code,
+          }
+        );
+      }
     }
-    }
-   
-  
   }
 };

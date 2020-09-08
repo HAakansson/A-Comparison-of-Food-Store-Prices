@@ -22,7 +22,8 @@ module.exports = class Scrubber {
     );
     // let scrubbed = [];
     for (let product of products) {
-      if (await DataBaseHelper.checkIfProductExists(product)) {
+      if (DataBaseHelper.checkIfProductExists(product)) {
+        console.log('In if', product);
         continue;
       }
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
@@ -34,9 +35,10 @@ module.exports = class Scrubber {
         console.log(product);
         console.log(error);
       }
-  
+
       if (scrubbedProduct) {
-          DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+        console.log('in scrubbed if', product);
+       await DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
       }
     }
     // return scrubbed;

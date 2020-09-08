@@ -40,20 +40,34 @@ module.exports = class AxfoodScrubber extends Scrubber {
     brand: (x) => x.manufacturer || "Unknown",
     image_url: (x) => x.image && x.image.url,
     thumbnail_url: (x) => x.thumbnail && x.thumbnail.url,
-    unit_price: (x) => x.priceValue,
+    unit_price: (x) => {
+      return x.potentialPromotions.length > 0 ? x.potentialPromotions[0].price.value : x.priceValue
+    },
     display_volume: (x) => {
-      return x.displayVolume
+      return x.displayVolume !== null && x.displayVolume !== ""
         ? parseFloat(x.displayVolume.replace(/,/, ".").replace(/[a-z:\s]/g, ""))
-        : "";
+        : "Unknown";
     },
     unit_measurement: (x) => {
-      return x.displayVolume
+      return x.displayVolume !== null && x.displayVolume !== ""
         ? x.displayVolume.replace(/[ca:\d.,\s]/gi, "")
-        : "";
+        : "Unknown";
     },
-    comparison_price: (x) =>
-      x.comparePrice ? parseFloat(x.comparePrice.replace(/,/, ".")) : "Unknown",
-    comparator: (x) => x.comparePriceUnit,
+    comparison_price: (x) => {
+      let price;
+      if (x.potentialPromotions.length > 0 && x.potentialPromotions[0].comparePrice !== null && x.potentialPromotions[0].comparePrice !== "" ) {
+          price = parseFloat(x.potentialPromotions[0].comparePrice.replace(/,/, "."));
+      }
+      else if (x.comparePrice !== null && x.comparePrice !== "") {
+        price = parseFloat(x.comparePrice.replace(/,/, "."));
+        
+      }
+      else {
+        price = "Unknown"
+      }
+      return price;
+    },
+    comparator: (x) => x.comparePriceUnit !== null && x.comparePriceUnit !== "" ? x.comparePriceUnit : "Unknown",
     lactosefree: (x) =>
       x.labels.length > 0 ? x.labels.includes("laktosfree") : false,
     organic: (x) =>
@@ -68,6 +82,9 @@ module.exports = class AxfoodScrubber extends Scrubber {
       let rawData = await fetch(
         `https://${this.store}/axfood/rest/p/${x.code}`
       ).catch((err) => {
+        console.log(rawData);
+        testString = JSON.stringify(rawData)
+        console.log(testString);
         console.log(err);
       });
       // If article number in deep article info does not match the article number from shallow article info, this will stop the operation and go to the next iteration, check scrubber class for more info.
