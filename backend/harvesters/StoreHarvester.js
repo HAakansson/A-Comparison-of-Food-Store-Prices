@@ -8,7 +8,7 @@ module.exports = class StoreHarvester {
     // throw new Error("You have to implement the method getCategories");
   }
 
-  async getProduct() {
+  async getProducts() {
     // throw new Error("You have to implement the method getProduct");
   }
 };

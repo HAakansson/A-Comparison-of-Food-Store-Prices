@@ -64,7 +64,7 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
 
   async getProducts(categoryURL) {
     let raw = await fetch(
-      `https://${this.store}/c/${categoryURL}${this.bustCache()}&size=1000`
+      `https://${this.store}/c/${categoryURL}${this.bustCache()}&size=10000`
     );
     return (await raw.json()).results;
   }

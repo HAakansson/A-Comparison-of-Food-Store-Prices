@@ -36,7 +36,6 @@ module.exports = class DataBaseHelper {
 
   static async insertProductIntoDB(store, product) {
     let storeName = store.split(".")[1];
-    if (storeName === "willys" || storeName === "hemkop") {
       let result = await db.run(
         /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement)`,
         {
@@ -66,7 +65,6 @@ module.exports = class DataBaseHelper {
           ? await this.insertDataIntoDietaryTable(product, potentialId)
           : await this.insertDataIntoDietaryTable(product);
       }
-    }
   }
 
   static async insertDataIntoProductsXCategories(product, productId) {
