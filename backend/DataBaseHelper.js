@@ -124,7 +124,7 @@ module.exports = class DataBaseHelper {
 
   static async insertDataIntoDietaryTable(product, potentialId) {
     if (potentialId) {
-     await db.run(
+      db.run(
         /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
           $dietary_restrictions_id: potentialId, //result.lastID,
@@ -144,7 +144,7 @@ module.exports = class DataBaseHelper {
       );
 
       if (result) {
-       await db.run(
+        db.run(
           /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
           {
             $dietary_restrictions_id: result.lastID,
