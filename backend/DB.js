@@ -8,7 +8,7 @@ module.exports = class DB {
 
   runner(method, query, params) {
     return new Promise((res) => {
-      this.db[method](query, params, (err, result) => {
+      this.db[method](query, params, function (err, result) {
         if (err) {
           throw new Error(err);
         }
@@ -21,8 +21,15 @@ module.exports = class DB {
     return await this.runner("get", ...args);
   }
 
-  async run(...args) {
-    return await this.runner("run", ...args);
+  async run(query, params) {
+    return new Promise((res) => {
+      this.db.run(query, params, function (err) {
+        if (err) {
+          throw new Error(err);
+        }
+        res(this);
+      });
+    });
   }
 
   async all(...args) {

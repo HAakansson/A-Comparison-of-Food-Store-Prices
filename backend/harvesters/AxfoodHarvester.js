@@ -1,39 +1,81 @@
 const StoreHarvester = require("./StoreHarvester");
 const fetch = require("node-fetch");
+const DataBaseHelper = require("../DataBaseHelper");
 
 module.exports = class AxfoodHarvester extends StoreHarvester {
-  constructor(categoriesTranslation, size = 1000) {
-    // if (this.constructor === AxfoodHarvester) {
-    //   throw new Error("You can not create an instance of StoreHarvester");
-    // }
-    super(categoriesTranslation, (size = 1000));
+  constructor(store) {
+    super();
+    this.store = store;
   }
-
-  static bustCache() {
+  bustCache() {
     return "?avoidCache=" + (Math.random() + "").split(".")[1];
   }
 
-  static async getCategories() {
-    let raw = await fetch(
-      "https://www.willys.se/leftMenu/categorytree" + this.bustCache()
+  async getCategories() {
+    console.log(`Harvesting categories from ${this.store} started...`);
+    let data = await fetch(
+      `https://${this.store}/leftMenu/categorytree${this.bustCache()}`
     );
-    return await raw.json();
+    data = await data.json();
+    let categoriesArrayForTheDB = []; // Cointaints ALL the categories that goes in to the DB.
+    let categoriesArrayForGetProducts = []; /* Only containts the top layer of categories that is going to be used to get all the products. */
+    categoriesArrayForTheDB.push({
+      name: data.title,
+      url: "Unknown",
+      store: this.store.split(".")[1],
+      categoryCode: data.id,
+    });
+    data.children.forEach((c) => {
+      categoriesArrayForTheDB.push({
+        name: c.title,
+        url: c.url,
+        store: this.store.split(".")[1],
+        categoryCode: c.id,
+      });
+      categoriesArrayForGetProducts.push(c.url);
+      c.children.forEach((cc) => {
+        categoriesArrayForTheDB.push({
+          name: cc.title,
+          url: cc.url,
+          store: this.store.split(".")[1],
+          categoryCode: cc.id,
+        });
+        if (cc.children.length > 0) {
+          cc.children.forEach((ccc) => {
+            categoriesArrayForTheDB.push({
+              name: ccc.title,
+              url: ccc.url,
+              store: this.store.split(".")[1],
+              categoryCode: ccc.id,
+            });
+          });
+        }
+      });
+    });
+    console.log("Harvesting done, adding to database started...");
+    for (let obj of categoriesArrayForTheDB) {
+      if (await DataBaseHelper.checkIfCategoryExists(obj)) {
+        continue;
+      }
+      await DataBaseHelper.insertCategoryToDB(obj);
+    }
+    return categoriesArrayForGetProducts;
   }
 
-  static async getProducts(categoryURL) {
+  async getProducts(categoryURL) {
     let raw = await fetch(
-      "https://www.willys.se/c/" +
-        categoryURL +
-        this.bustCache() +
-        "&size=10000"
+      `https://${this.store}/c/${categoryURL}${this.bustCache()}&size=1000`
     );
     return (await raw.json()).results;
   }
 
-  static async getAllProducts() {
-    // NOT WRITTEN YET!
-    let categories = await this.getCategories();
-    // now loop basic categories and getProducts for each category...
-    // how would you write this?
+  async getAllProducts(categoriesArray) {
+    console.log(`Harvesting products from ${this.store} started...`);
+    let allProducts = [];
+    for (let categoryURL of categoriesArray) {
+      let products = await this.getProducts(categoryURL);
+      allProducts.push(...products);
+    }
+    return allProducts;
   }
 };

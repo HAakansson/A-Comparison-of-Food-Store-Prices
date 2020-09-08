@@ -1,10 +1,4 @@
-//const AxfoodHarvester = require("./harvesters/AxfoodHarvester");
-const MathemHarvester = require("./harvesters/MathemHarvester");
+// This script acts as a main-method in the same way as it does in for example Java or C#.
+const Harvesting = require("./Harvesting");
 
-(async () => {
-
-  let data = await MathemHarvester.getAllProducts();
-
-  console.log(data)
-
-})();
+Harvesting.go();
