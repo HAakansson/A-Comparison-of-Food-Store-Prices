@@ -16,8 +16,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
     let raw = await fetch(
       "https://api.mathem.io/ecom-navigation/noauth/v2/menu/10"
     );
-
     let data = await raw.json()
+    
     let mycategories = data["categories"];
     
     mycategories = mycategories.map(item => {
@@ -63,22 +63,6 @@ module.exports = class MathemHarvester extends StoreHarvester {
     
     let myproducts = await raw.json()
 
-    myproducts = myproducts.products.map(product => {
-      return {name: product.name, 
-              categories: product.categoryAncestry,
-              brand: product.brand.name,
-              country_of_origin: product.origin || "Unknown",
-              desc: product.fullName,
-              displayvolume: product.quantity,
-              store: "Mathem",
-              unit_price: product.price,
-              comparison_price: product.comparisonPrice,
-              comparator: product.comparisonUnit, 
-              dietary_restr: product.badges,
-              image: product.images.ORIGINAL,
-              code: product.id
-      }
-    })
     return myproducts;
   }
 
