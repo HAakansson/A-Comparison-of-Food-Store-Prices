@@ -38,11 +38,10 @@ module.exports = class DataBaseHelper {
   }
   static async UpdatePriceOnProductMathem(product, dbProduct) {
     await db.run(
-      /*sql*/ `UPDATE Product SET unit_price = $newPrice WHERE id = $id AND store = $store`,
+      /*sql*/ `UPDATE Product SET unit_price = $newPrice WHERE code = $code`,
       {
         $newPrice: product.price,
-        $id: dbProduct.code,
-        $store: dbProduct.store,
+        $code: dbProduct.code,
       }
     );
   }
