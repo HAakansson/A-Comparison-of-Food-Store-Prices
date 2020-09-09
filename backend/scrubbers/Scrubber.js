@@ -23,6 +23,7 @@ module.exports = class Scrubber {
     // let scrubbed = [];
     for (let product of products) {
       if (await DataBaseHelper.checkIfProductExists(product)) {
+  
         continue;
       }
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?

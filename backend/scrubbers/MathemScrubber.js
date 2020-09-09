@@ -38,7 +38,7 @@ module.exports = class MatHemScrubber extends Scrubber {
           })
         : false;
     },
-    extra_info: async (x) => {
+    extra_info: (x) => {
       let information = {};
       information.country_of_origin = x.origin ? x.origin.name : "Unknown";
       information.desc = x.fullName;
@@ -65,6 +65,20 @@ module.exports = class MatHemScrubber extends Scrubber {
         };
       });
       return information;
+    },
+    discount: (x) => {
+      if (!x.discount) {
+        return;
+      }
+      let discount = {};
+      discount.price = x.discount.price;
+      discount.unit_price = x.discount.unitPrice;
+      discount.comparison_price = x.discount.comparisonPrice;
+      discount.savings = x.discount.savings;
+      discount.percentage_savings = x.discount.percentageSavings;
+      discount.quantity_to_be_bought = x.discount.quantityToBeBought;
+      discount.discount_count_limit = x.discount.discountCountLimit;
+      return discount;
     },
   };
 };
