@@ -27,23 +27,61 @@ module.exports = class DataBaseHelper {
   }
 
   static async checkIfProductExists(product) {
-    let productExists;
-    productExists = await db.get(
-      /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store AND unit_price = $unit_price`,
+
+    let dbProduct = await db.get(
+      /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store`,
       {
         $code: product.code,
         $store: product.store,
-        $unit_price: product.potentialPromotions.length < 0 ? product.potentialPromotions[0].price.value : product.priceValue,
       }
     );
-    return productExists ? true : false;
+    
+    return dbProduct ? dbProduct : false; 
+  }
+
+
+  static async updateProductDiscountAxfood(product, dbProduct) {
+  
+
+       console.log(dbProduct.store);
+
+
+    db.run(
+      /*sql*/ `UPDATE Product SET discount_price = $discount_price, discount_quantity = $discount_quantity, discount_comparison_price = $discount_comparison_price, discount_max_limit = $discount_max_limit, discount_requires_membership = $discount_requires_membership WHERE code = $code AND store = $store`,
+      {
+        $code: product.code,
+        $store: dbProduct.store,
+        $discount_price: product.potentialPromotions[0].rewardLabel !== null && product.potentialPromotions[0].rewardLabel !== "" ? product.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "") : null,
+        $discount_quantity: product.potentialPromotions[0].conditionLabel !== null && product.potentialPromotions[0].conditionLabel !== "" ? product.potentialPromotions[0].conditionLabel.includes("Spara") ? null : parseFloat(product.potentialPromotions[0].conditionLabel.replace(/[a-z:\s]/g, "")) : null,
+        $discount_comparison_price: product.potentialPromotions[0].comparePrice !== null && product.potentialPromotions[0].comparePrice !== "" ? product.potentialPromotions[0].comparePrice : null,
+        $discount_max_limit: product.potentialPromotions[0].redeemLimitLabel !== null && product.potentialPromotions[0].redeemLimitLabel !== "" ? parseFloat(product.potentialPromotions[0].redeemLimitLabel.replace(/[a-z:\s]/g, "")) : null,
+        $discount_requires_membership: product.potentialPromotions[0].campaignType !== null && product.potentialPromotions[0].campaignType !== "" ? product.potentialPromotions[0].campaignType.includes("LOYALTY") ? true : false : false,
+      }
+    );
+  }
+
+
+  static async updateProductPriceAxfood(product, dbProduct) {
+
+    console.log(product.priceValue);
+    console.log(dbProduct.store);
+    db.run(
+      /*sql*/ `UPDATE Product SET unit_price = $unit_price  WHERE code = $code AND store = $store`,
+      {
+        $code: dbProduct.code,
+        $store: dbProduct.store,
+        $unit_price: product.priceValue
+      }
+    );
+
   }
 
   static async insertProductIntoDB(store, product) {
     let storeName = store.split(".")[1];
+
     if (storeName === "willys" || storeName === "hemkop") {
       let result = await db.run(
-        /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement)`,
+        /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement, discount_price, discount_comparison_price, discount_max_limit, discount_quantity, discount_requires_membership) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement, $discount_price, $discount_comparison_price, $discount_max_limit, $discount_quantity, $discount_requires_membership)`,
         {
           $name: product.name,
           $brand: product.brand,
@@ -56,6 +94,11 @@ module.exports = class DataBaseHelper {
           $comparison_price: product.comparison_price,
           $code: product.code,
           $unit_measurement: product.unit_measurement,
+          $discount_price: product.discountProperties.discount_price,
+          $discount_comparison_price: product.discountProperties.discount_comparison_price,
+          $discount_max_limit: product.discountProperties.discount_max_limit,
+          $discount_quantity: product.discountProperties.discount_quantity,
+          $discount_requires_membership: product.discountProperties.discount_requires_membership
         }
       );
       if (result) {
