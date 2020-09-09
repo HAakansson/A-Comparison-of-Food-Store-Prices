@@ -10,21 +10,21 @@ module.exports = class Harvesting {
     let mathemHarvester = new MathemHarvester();
     let mathemScrubber = new MathemScrubber();
 
+    // let startTime = this.startTimer();
+    // let categories = await axHarvester.getCategories();
+    // let endTime = this.endTimer(startTime);
+    // console.log(`Done, took ${endTime}s to complete.`);
+
     let startTime = this.startTimer();
-    let categories = await axHarvester.getCategories();
+    let categoriesMathem = await mathemHarvester.getCategories();
     let endTime = this.endTimer(startTime);
     console.log(`Done, took ${endTime}s to complete.`);
 
-    startTime = this.startTimer();
-    let categoriesMathem = await mathemHarvester.getCategories();
-    endTime = this.endTimer(startTime);
-    console.log(`Done, took ${endTime}s to complete.`);
-
-    startTime = this.startTimer();
-    let products = await axHarvester.getAllProducts(categories);
-    endTime = this.endTimer(startTime);
-    console.log(`Done, took ${endTime}s to complete.`);
-    console.log("Number of products harvested: ", products.length);
+    // startTime = this.startTimer();
+    // let products = await axHarvester.getAllProducts(categories);
+    // endTime = this.endTimer(startTime);
+    // console.log(`Done, took ${endTime}s to complete.`);
+    // console.log("Number of products harvested: ", products.length);
 
     startTime = this.startTimer();
     let productsMathem = await mathemHarvester.getAllProducts(categoriesMathem);
@@ -32,10 +32,10 @@ module.exports = class Harvesting {
     console.log(`Done, took ${endTime}s to complete.`);
     console.log("Number of products harvested: ", productsMathem.length);
 
-    startTime = this.startTimer();
-    await axScrubber.scrubAll(products);
-    endTime = this.endTimer(startTime);
-    console.log(`Done, took ${endTime}s to complete.`);
+    // startTime = this.startTimer();
+    // await axScrubber.scrubAll(products);
+    // endTime = this.endTimer(startTime);
+    // console.log(`Done, took ${endTime}s to complete.`);
 
     startTime = this.startTimer();
     await mathemScrubber.scrubAll(productsMathem);

@@ -55,7 +55,6 @@ module.exports = class MathemHarvester extends StoreHarvester {
       }
       await DataBaseHelper.insertCategoryToDB(obj);
     }
-    console.log(categoriesArrayForGetProducts);
     return categoriesArrayForGetProducts;
   }
 

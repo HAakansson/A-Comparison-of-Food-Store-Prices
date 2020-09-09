@@ -26,45 +26,91 @@ module.exports = class DataBaseHelper {
     );
   }
 
-  static async checkIfProductExists(product) {
-    let productExists = await db.get(
-      /*sql*/ `SELECT * FROM Product WHERE code = $code`,
-      { $code: product.code }
+  static async checkIfProductExists(product, store) {
+    let dbProduct = await db.get(
+      /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store`,
+      {
+        $code: product.code || product.id,
+        $store: store.split(".")[1],
+      }
     );
-    return productExists ? true : false;
+    return dbProduct;
+  }
+  static async UpdatePriceOnProductMathem(product, dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET unit_price = $newPrice WHERE id = $id AND store = $store`,
+      {
+        $newPrice: product.price,
+        $id: dbProduct.code,
+        $store: dbProduct.store,
+      }
+    );
+  }
+
+  static async UpdateDiscountsOnProductMathem(product, dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET discount_price = $newPrice, discount_comparison_price = $comparison_price, discount_quantity = $quantity, discount_max_limit = $max_limit WHERE code = $code`,
+      {
+        $newPrice:
+          product.discount.price ||
+          product.discount.displayPrice ||
+          product.discount.unitPrice,
+        $comparison_price: product.discount.comparisonPrice,
+        $quantity: product.discount.quantityToBeBought,
+        $max_limit: product.discount.discountCountLimit,
+        $code: dbProduct.code,
+      }
+    );
+  }
+
+  static async resetDiscountsOnProductMathem(dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET discount_price = $newPrice, discount_comparison_price = $comparison_price, discount_quantity = $quantity, discount_max_limit = $max_limit WHERE code = $code`,
+      {
+        $newPrice: null,
+        $comparison_price: null,
+        $quantity: null,
+        $max_limit: null,
+        $code: dbProduct.code,
+      }
+    );
   }
 
   static async insertProductIntoDB(store, product) {
     let storeName = store.split(".")[1];
-      let result = await db.run(
-        /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement)`,
-        {
-          $name: product.name,
-          $brand: product.brand,
-          $country_of_origin: product.extra_info.country_of_origin,
-          $description: product.extra_info.desc,
-          $display_volume: product.display_volume,
-          $store: product.store,
-          $unit_price: product.unit_price,
-          $comparator: product.comparator,
-          $comparison_price: product.comparison_price,
-          $code: product.code,
-          $unit_measurement: product.unit_measurement,
-        }
-      );
-      if (result) {
-        let productId = result.lastID;
-        let potentialId = await this.checkIfDietaryRestrictionExists(
-          product,
-          productId
-        );
-        await this.insertDataIntoProductsXCategories(product, productId);
-        await this.insertDataIntoImageTable(product);
-
-        potentialId
-          ? await this.insertDataIntoDietaryTable(product, potentialId)
-          : await this.insertDataIntoDietaryTable(product);
+    let result = await db.run(
+      /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement, discount_price, discount_comparison_price, discount_quantity,discount_max_limit) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement, $discount_price, $discount_comparison_price, $discount_quantity,$discount_max_limit)`,
+      {
+        $name: product.name,
+        $brand: product.brand,
+        $country_of_origin: product.extra_info.country_of_origin,
+        $description: product.extra_info.desc,
+        $display_volume: product.display_volume,
+        $store: product.store,
+        $unit_price: product.unit_price,
+        $comparator: product.comparator,
+        $comparison_price: product.comparison_price,
+        $code: product.code,
+        $unit_measurement: product.unit_measurement,
+        $discount_price: product.discount.price,
+        $discount_comparison_price: product.discount.comparison_price,
+        $discount_quantity: product.discount.quantity,
+        $discount_max_limit: product.discount.max_limit,
       }
+    );
+    if (result) {
+      let productId = result.lastID;
+      let potentialId = await this.checkIfDietaryRestrictionExists(
+        product,
+        productId
+      );
+      await this.insertDataIntoProductsXCategories(product, productId);
+      await this.insertDataIntoImageTable(product);
+
+      potentialId
+        ? await this.insertDataIntoDietaryTable(product, potentialId)
+        : await this.insertDataIntoDietaryTable(product);
+    }
   }
 
   static async insertDataIntoProductsXCategories(product, productId) {

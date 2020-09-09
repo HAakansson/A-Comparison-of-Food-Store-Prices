@@ -20,10 +20,31 @@ module.exports = class Scrubber {
     console.log(
       `Scrubbing products from ${this.store} and adding to DB started...`
     );
+
     // let scrubbed = [];
+    let i = 1;
     for (let product of products) {
-      if (await DataBaseHelper.checkIfProductExists(product)) {
-  
+      let dbProduct = await DataBaseHelper.checkIfProductExists(
+        product,
+        this.store
+      );
+      if (dbProduct) {
+        if (dbProduct.store === "mathem") {
+          if (!product.discount && dbProduct.discount_price) {
+            await DataBaseHelper.resetDiscountsOnProductMathem(dbProduct);
+          }
+          if (product.price !== dbProduct.unit_price) {
+            await DataBaseHelper.UpdatePriceOnProductMathem(product, dbProduct);
+          }
+          if (product.discount) {
+            console.log(i, product.name, product.discount.price);
+            i++;
+            await DataBaseHelper.UpdateDiscountsOnProductMathem(
+              product,
+              dbProduct
+            );
+          }
+        }
         continue;
       }
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
@@ -35,9 +56,9 @@ module.exports = class Scrubber {
         console.log(product);
         console.log(error);
       }
-  
+
       if (scrubbedProduct) {
-          DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+        DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
       }
     }
     // return scrubbed;

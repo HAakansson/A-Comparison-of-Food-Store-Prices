@@ -67,17 +67,18 @@ module.exports = class MatHemScrubber extends Scrubber {
       return information;
     },
     discount: (x) => {
-      if (!x.discount) {
-        return;
-      }
       let discount = {};
-      discount.price = x.discount.price;
-      discount.unit_price = x.discount.unitPrice;
+      if (!x.discount) {
+        discount.price = null;
+        discount.comparison_price = null;
+        discount.quantity = null;
+        discount.max_limit = null;
+        return discount;
+      }
+      discount.price = x.discount.unitPrice;
       discount.comparison_price = x.discount.comparisonPrice;
-      discount.savings = x.discount.savings;
-      discount.percentage_savings = x.discount.percentageSavings;
-      discount.quantity_to_be_bought = x.discount.quantityToBeBought;
-      discount.discount_count_limit = x.discount.discountCountLimit;
+      discount.quantity = x.discount.quantityToBeBought;
+      discount.max_limit = x.discount.discountCountLimit;
       return discount;
     },
   };
