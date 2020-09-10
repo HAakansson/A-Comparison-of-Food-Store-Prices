@@ -42,22 +42,8 @@ module.exports = class MatHemScrubber extends Scrubber {
       let information = {};
       information.country_of_origin = x.origin ? x.origin.name : "Unknown";
       information.desc = x.fullName;
-      information.vegan = (x) => {
-        return x.badges.length > 0
-          ? x.badges.some((y) => {
-              return y.name === "Vegansk";
-            })
-          : false;
-      };
-      information.vegetarian = (x) => {
-        if (information.vegan === true) {
-          return true;
-        } else {
-          x.categoryAncestry.some((y) => {
-            return y.name.includes("Vegetarisk");
-          });
-        }
-      };
+      information.vegan = x.badges.length > 0 ? x.badges.some((y) => { return y.name === "Vegansk"; }) : false;
+      information.vegetarian = information.vegan === true ? true : x.categoryAncestry.some((y) => { return y.name.includes("Vegetarisk") });
       information.categories = x.categoryAncestry.map((x) => {
         return {
           name: x.name,
