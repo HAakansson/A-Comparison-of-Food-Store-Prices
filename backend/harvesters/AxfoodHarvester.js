@@ -52,7 +52,7 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
         }
       });
     });
-    console.log("Harvesting done, adding to database started...");
+    console.log(`Harvesting from ${this.store} done, adding to database started...`);
     for (let obj of categoriesArrayForTheDB) {
       if (await DataBaseHelper.checkIfCategoryExists(obj)) {
         continue;
@@ -64,7 +64,7 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
 
   async getProducts(categoryURL) {
     let raw = await fetch(
-      `https://${this.store}/c/${categoryURL}${this.bustCache()}&size=1000`
+      `https://${this.store}/c/${categoryURL}${this.bustCache()}&size=10000`
     );
     return (await raw.json()).results;
   }

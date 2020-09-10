@@ -30,17 +30,14 @@ module.exports = class DataBaseHelper {
     let dbProduct = await db.get(
       /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store`,
       {
-        $code: product.code,
+        $code: product.code || product.id,
         $store: store.split(".")[1],
       }
     );
-    
-    return dbProduct ? dbProduct : false; 
+    return dbProduct; 
   }
 
-
   static async updateProductDiscountAxfood(product, dbProduct) {
-    
     db.run(
       /*sql*/ `UPDATE Product SET discount_price = $discount_price, discount_quantity = $discount_quantity, discount_comparison_price = $discount_comparison_price, discount_max_limit = $discount_max_limit, discount_requires_membership = $discount_requires_membership WHERE code = $code AND store = $store`,
       {
@@ -64,48 +61,79 @@ module.exports = class DataBaseHelper {
         $store: dbProduct.store,
         $unit_price: product.priceValue
       }
+      );
+    }
+    
+  static async UpdatePriceOnProductMathem(product, dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET unit_price = $newPrice WHERE code = $code`,
+      {
+        $newPrice: product.price,
+        $code: dbProduct.code,
+      }
     );
-
   }
 
-  static async insertProductIntoDB(store, product) {
-    let storeName = store.split(".")[1];
-
-    if (storeName === "willys" || storeName === "hemkop") {
-      let result = await db.run(
-        /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement, discount_price, discount_comparison_price, discount_max_limit, discount_quantity, discount_requires_membership) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement, $discount_price, $discount_comparison_price, $discount_max_limit, $discount_quantity, $discount_requires_membership)`,
-        {
-          $name: product.name,
-          $brand: product.brand,
-          $country_of_origin: product.extra_info.country_of_origin,
-          $description: product.extra_info.desc,
-          $display_volume: product.display_volume,
-          $store: product.store,
-          $unit_price: product.unit_price,
-          $comparator: product.comparator,
-          $comparison_price: product.comparison_price,
-          $code: product.code,
-          $unit_measurement: product.unit_measurement,
-          $discount_price: product.discountProperties.discount_price,
-          $discount_comparison_price: product.discountProperties.discount_comparison_price,
-          $discount_max_limit: product.discountProperties.discount_max_limit,
-          $discount_quantity: product.discountProperties.discount_quantity,
-          $discount_requires_membership: product.discountProperties.discount_requires_membership
-        }
-      );
-      if (result) {
-        let productId = result.lastID;
-        let potentialId = await this.checkIfDietaryRestrictionExists(
-          product,
-          productId
-        );
-        await this.insertDataIntoProductsXCategories(product, productId);
-        await this.insertDataIntoImageTable(product);
-
-        potentialId
-          ? await this.insertDataIntoDietaryTable(product, potentialId)
-          : await this.insertDataIntoDietaryTable(product);
+  static async UpdateDiscountsOnProductMathem(product, dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET discount_price = $newPrice, discount_comparison_price = $comparison_price, discount_quantity = $quantity, discount_max_limit = $max_limit WHERE code = $code`,
+      {
+        $newPrice:
+          product.discount.price ||
+          product.discount.displayPrice ||
+          product.discount.unitPrice,
+        $comparison_price: product.discount.comparisonPrice,
+        $quantity: product.discount.quantityToBeBought,
+        $max_limit: product.discount.discountCountLimit,
+        $code: dbProduct.code,
       }
+    );
+  }
+
+  static async resetDiscountsOnProductMathem(dbProduct) {
+    await db.run(
+      /*sql*/ `UPDATE Product SET discount_price = $newPrice, discount_comparison_price = $comparison_price, discount_quantity = $quantity, discount_max_limit = $max_limit WHERE code = $code`,
+      {
+        $newPrice: null,
+        $comparison_price: null,
+        $quantity: null,
+        $max_limit: null,
+        $code: dbProduct.code,
+      }
+    );
+  }
+
+  static async insertProductIntoDB(product) {
+    let result = await db.run(
+      /*sql*/ `INSERT INTO Product (name, brand, country_of_origin, description, display_volume, store, unit_price, comparator, comparison_price, code, unit_measurement, discount_price, discount_comparison_price, discount_quantity,discount_max_limit, discount_requires_membership) VALUES($name, $brand, $country_of_origin, $description, $display_volume, $store, $unit_price, $comparator, $comparison_price, $code, $unit_measurement, $discount_price, $discount_comparison_price, $discount_quantity,$discount_max_limit, $discount_requires_membership)`,
+      {
+        $name: product.name,
+        $brand: product.brand,
+        $country_of_origin: product.extra_info.country_of_origin,
+        $description: product.extra_info.desc,
+        $display_volume: product.display_volume,
+        $store: product.store,
+        $unit_price: product.unit_price,
+        $comparator: product.comparator,
+        $comparison_price: product.comparison_price,
+        $code: product.code,
+        $unit_measurement: product.unit_measurement,
+        $discount_price: product.discount.price,
+        $discount_comparison_price: product.discount.comparison_price,
+        $discount_quantity: product.discount.quantity,
+        $discount_max_limit: product.discount.max_limit,
+        $discount_requires_membership: product.discount.requires_membership
+      }
+    );
+    if (result) {
+      let productId = result.lastID;
+      let potentialId = await this.checkIfDietaryRestrictionExists(product);
+      await this.insertDataIntoProductsXCategories(product, productId);
+      await this.insertDataIntoImageTable(product);
+
+      potentialId
+        ? await this.insertDataIntoDietaryTable(product, potentialId)
+        : await this.insertDataIntoDietaryTable(product);
     }
   }
 
@@ -143,7 +171,7 @@ module.exports = class DataBaseHelper {
     }
   }
 
-  static async checkIfDietaryRestrictionExists(product, productId) {
+  static async checkIfDietaryRestrictionExists(product) {
     let dietaryRestrictionExist = await db.get(
       /*sql*/ `SELECT id FROM Dietary_Restrictions WHERE organic = $organic AND gluten = $gluten AND vegetarian = $vegetarian AND vegan = $vegan AND lactosefree = $lactosefree`,
       {

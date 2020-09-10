@@ -21,24 +21,35 @@ module.exports = class Scrubber {
     console.log(
       `Scrubbing products from ${this.store} and adding to DB started...`
     );
+
     // let scrubbed = [];
     for (let product of products) {
       let dbProduct = await DataBaseHelper.checkIfProductExists(product, this.store);
-
       // if product exist...
       if (dbProduct) {
+
         // if store is Axfood: 
         if (dbProduct.store === "hemkop" || dbProduct.store === "willys") {
           try {
-             this.isProductUpdatedAxfood(product, dbProduct); // checks if product needs to update price
+            this.isProductUpdatedAxfood(product, dbProduct); // checks if product needs to update price
           } catch (err) {
             console.log(err);
           }
-
-        } else {
-          // for mathem...
         }
-             
+        if (dbProduct.store === "mathem") {
+          if (!product.discount && dbProduct.discount_price) {
+            await DataBaseHelper.resetDiscountsOnProductMathem(dbProduct);
+          }
+          if (product.price !== dbProduct.unit_price) {
+            await DataBaseHelper.UpdatePriceOnProductMathem(product, dbProduct);
+          }
+          if (product.discount) {
+            await DataBaseHelper.UpdateDiscountsOnProductMathem(
+              product,
+              dbProduct
+            );
+          }
+        }
         continue;
       }
     
@@ -52,8 +63,7 @@ module.exports = class Scrubber {
       }
 
       if (scrubbedProduct) {
-
-        DataBaseHelper.insertProductIntoDB(this.store, scrubbedProduct);
+        DataBaseHelper.insertProductIntoDB(scrubbedProduct);
       }
     }
     // return scrubbed;

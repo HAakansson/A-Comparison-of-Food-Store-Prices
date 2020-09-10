@@ -105,24 +105,21 @@ module.exports = class AxfoodScrubber extends Scrubber {
       });
       return information;
     },
-    discountProperties: (x) => {
-
+    discount: (x) => {
       let discount = {};
-
-
       // discount_price & discount_comarison_price & discount_quantity & discount_max_limit
       if (x.potentialPromotions.length > 0) {
-        discount.discount_price = x.potentialPromotions[0].rewardLabel !== null & x.potentialPromotions[0].rewardLabel !== "" ? parseFloat(x.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")) : null;
-        discount.discount_comparison_price = x.potentialPromotions[0].comparePrice !== null & x.potentialPromotions[0].comparePrice !== "" ? parseFloat(x.potentialPromotions[0].comparePrice.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")): null;
-        discount.discount_max_limit = x.potentialPromotions[0].redeemLimitLabel !== null ? parseFloat(x.potentialPromotions[0].redeemLimitLabel.replace(/[\D:\s]/g, "")) : null;
-        discount.discount_quantity = x.potentialPromotions[0].conditionLabel !== null && x.potentialPromotions[0].conditionLabel !== "" ? x.potentialPromotions[0].conditionLabel.includes("Spara") ? null : parseFloat(x.potentialPromotions[0].conditionLabel.replace(/[\D:\s]/g, "")) : null;
-        discount.discount_requires_membership = x.potentialPromotions[0].campaignType !== null && x.potentialPromotions[0].campaignType !== "" ? x.potentialPromotions[0].campaignType.includes("LOYALTY") ? true : false : false;
+        discount.price = x.potentialPromotions[0].rewardLabel !== null & x.potentialPromotions[0].rewardLabel !== "" ? parseFloat(x.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")) : null;
+        discount.comparison_price = x.potentialPromotions[0].comparePrice !== null & x.potentialPromotions[0].comparePrice !== "" ? parseFloat(x.potentialPromotions[0].comparePrice.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")): null;
+        discount.max_limit = x.potentialPromotions[0].redeemLimitLabel !== null ? parseFloat(x.potentialPromotions[0].redeemLimitLabel.replace(/[\D:\s]/g, "")) : null;
+        discount.quantity = x.potentialPromotions[0].conditionLabel !== null && x.potentialPromotions[0].conditionLabel !== "" ? x.potentialPromotions[0].conditionLabel.includes("Spara") ? null : parseFloat(x.potentialPromotions[0].conditionLabel.replace(/[\D:\s]/g, "")) : null;
+        discount.requires_membership = x.potentialPromotions[0].campaignType !== null && x.potentialPromotions[0].campaignType !== "" ? x.potentialPromotions[0].campaignType.includes("LOYALTY") ? true : false : false;
       } else {
-        discount.discount_price = null;
-        discount.discount_comparison_price = null;
-        discount.discount_max_limit = null;
-        discount.discount_quantity = null;
-        discount.discount_requires_membership = false;
+        discount.price = null;
+        discount.comparison_price = null;
+        discount.max_limit = null;
+        discount.quantity = null;
+        discount.requires_membership = false;
       }
       return discount;
     }
