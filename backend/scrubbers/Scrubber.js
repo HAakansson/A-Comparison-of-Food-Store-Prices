@@ -5,9 +5,6 @@ module.exports = class Scrubber {
     this.store = store;
   }
 
- 
-
-
   async scrubOne(product) {
     let scrubbed = {};
     let tschema = this.translateSchema;
@@ -26,29 +23,12 @@ module.exports = class Scrubber {
     );
     // let scrubbed = [];
     for (let product of products) {
-      
-      let sProduct;
-      let dbProduct;
-
-      try {
-        sProduct = await this.scrubOne(product);
-
-      } catch (err)
-      {
-        console.log(err);
-      }
-
-      dbProduct = await DataBaseHelper.checkIfProductExists(sProduct);
-
-
-
-      //console.log(dbProduct);
+      let dbProduct = await DataBaseHelper.checkIfProductExists(product, this.store);
 
       // if product exist...
       if (dbProduct) {
-
         // if store is Axfood: 
-        if (sProduct.store === "hemkop" || sProduct.store === "willys") {
+        if (dbProduct.store === "hemkop" || dbProduct.store === "willys") {
           try {
              this.isProductUpdatedAxfood(product, dbProduct); // checks if product needs to update price
           } catch (err) {
@@ -61,16 +41,13 @@ module.exports = class Scrubber {
              
         continue;
       }
-      
-      
-      
+    
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
       let scrubbedProduct;
 
       try {
         scrubbedProduct = await this.scrubOne(product);
       } catch (error) {
-        console.log(product);
         console.log(error);
       }
 
@@ -85,30 +62,18 @@ module.exports = class Scrubber {
 
  
    async isProductUpdatedAxfood(product, dbProduct) {
-
     // if discount exist on scubbed product...
     if (product.potentialPromotions.length > 0)
     {
-      
+  
       // if price from api is not equal dbPr
       if (parseFloat(product.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")) !== dbProduct.discount_price) {
-                
-        console.log("DISCOUNT PRICE DIFFERENT")
-        console.log(product.code);
-
         DataBaseHelper.updateProductDiscountAxfood(product, dbProduct);
         //DatabaseHelper.updateProductWithPotentialDiscount(product);
       } 
     }
-
-     console.log(product.priceValue, dbProduct.unit_price);
-     
-     
     // if product price is not the same as price in db
      if (product.priceValue !== dbProduct.unit_price) {
-       console.log("PRICE DIFFERENT");
-       console.log(product.code);
-
           DataBaseHelper.updateProductPriceAxfood(product, dbProduct);
     }
   }

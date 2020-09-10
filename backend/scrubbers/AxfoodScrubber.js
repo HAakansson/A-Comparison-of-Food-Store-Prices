@@ -77,9 +77,6 @@ module.exports = class AxfoodScrubber extends Scrubber {
       let rawData = await fetch(
         `https://${this.store}/axfood/rest/p/${x.code}`
       ).catch((err) => {
-        console.log(rawData);
-        testString = JSON.stringify(rawData)
-        console.log(testString);
         console.log(err);
       });
       // If article number in deep article info does not match the article number from shallow article info, this will stop the operation and go to the next iteration, check scrubber class for more info.

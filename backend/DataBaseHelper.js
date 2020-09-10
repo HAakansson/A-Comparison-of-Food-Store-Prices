@@ -26,13 +26,12 @@ module.exports = class DataBaseHelper {
     );
   }
 
-  static async checkIfProductExists(product) {
-
+  static async checkIfProductExists(product, store) {
     let dbProduct = await db.get(
       /*sql*/ `SELECT * FROM Product WHERE code = $code AND store = $store`,
       {
         $code: product.code,
-        $store: product.store,
+        $store: store.split(".")[1],
       }
     );
     
@@ -41,11 +40,7 @@ module.exports = class DataBaseHelper {
 
 
   static async updateProductDiscountAxfood(product, dbProduct) {
-  
-
-       console.log(dbProduct.store);
-
-
+    
     db.run(
       /*sql*/ `UPDATE Product SET discount_price = $discount_price, discount_quantity = $discount_quantity, discount_comparison_price = $discount_comparison_price, discount_max_limit = $discount_max_limit, discount_requires_membership = $discount_requires_membership WHERE code = $code AND store = $store`,
       {
@@ -62,9 +57,6 @@ module.exports = class DataBaseHelper {
 
 
   static async updateProductPriceAxfood(product, dbProduct) {
-
-    console.log(product.priceValue);
-    console.log(dbProduct.store);
     db.run(
       /*sql*/ `UPDATE Product SET unit_price = $unit_price  WHERE code = $code AND store = $store`,
       {
@@ -170,7 +162,7 @@ module.exports = class DataBaseHelper {
       db.run(
         /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
-          $dietary_restrictions_id: potentialId, //result.lastID,
+          $dietary_restrictions_id: potentialId,
           $code: product.code,
         }
       );
