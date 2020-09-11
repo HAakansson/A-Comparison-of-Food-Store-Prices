@@ -47,7 +47,7 @@ module.exports = class MatHemScrubber extends Scrubber {
       information.categories = x.categoryAncestry.map((x) => {
         return {
           name: x.name,
-          categoryCode: x.id,
+          categoryCode: x.url,
         };
       });
       return information;

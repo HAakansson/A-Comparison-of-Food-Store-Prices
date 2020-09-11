@@ -94,8 +94,7 @@ module.exports = class AxfoodScrubber extends Scrubber {
       information.vegan = data.name.includes("vegan") || data.name.includes("Vegan") || data.dietTypeInformation.includes("Vegan") || data.dietTypeInformation.includes("vegan");
       
       information.vegetarian = data.breadCrumbs.some((x) =>
-        x.name.match(/vegetariskt?/gi) || data.dietTypeInformation.includes("Vegetarian") || data.dietTypeInformation.includes("vegetarian") || information.vegan == true
-      );
+        x.name.match(/vegetariskt?/gi)) || data.dietTypeInformation.includes("Vegetarian") || data.dietTypeInformation.includes("vegetarian") || information.vegan == true;
       data.breadCrumbs.pop();
       information.categories = data.breadCrumbs.map((x) => {
         return {
