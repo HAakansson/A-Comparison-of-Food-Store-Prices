@@ -191,7 +191,7 @@ module.exports = class DataBaseHelper {
         /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
         {
           $dietary_restrictions_id: potentialId,
-          $code: product.code,
+          $code: product.code || product.id,
         }
       );
     } else {
@@ -205,13 +205,12 @@ module.exports = class DataBaseHelper {
           $lactosefree: product.lactosefree,
         }
       );
-
       if (result) {
         db.run(
           /*sql*/ `UPDATE Product SET dietary_restrictions_id = $dietary_restrictions_id WHERE code = $code`,
           {
             $dietary_restrictions_id: result.lastID,
-            $code: product.code,
+            $code: product.code || product.id,
           }
         );
       }

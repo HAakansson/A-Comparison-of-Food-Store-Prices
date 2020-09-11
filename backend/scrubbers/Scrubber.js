@@ -52,7 +52,6 @@ module.exports = class Scrubber {
         }
         continue;
       }
-    
       // scrubbed.push(await this.scrubOne(product)); // Why push it on to an array? Why not straight in to the DB?
       let scrubbedProduct;
 
@@ -63,14 +62,12 @@ module.exports = class Scrubber {
       }
 
       if (scrubbedProduct) {
-        DataBaseHelper.insertProductIntoDB(scrubbedProduct);
+        await DataBaseHelper.insertProductIntoDB(scrubbedProduct);
       }
     }
     // return scrubbed;
   }
 
-
- 
    async isProductUpdatedAxfood(product, dbProduct) {
     // if discount exist on scubbed product...
     if (product.potentialPromotions.length > 0)
