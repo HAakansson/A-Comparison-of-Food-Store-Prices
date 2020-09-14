@@ -8,7 +8,7 @@ module.exports = class DB {
 
   runner(method, query, params) {
     return new Promise((res) => {
-      this.db[method](query, params, function (err, result) {
+      this.db[method](query, params, (err, result) => {
         if (err) {
           throw new Error(err);
         }
