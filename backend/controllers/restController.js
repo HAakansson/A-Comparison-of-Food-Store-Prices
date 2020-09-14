@@ -19,7 +19,7 @@ const getSuggestions = async (req, res) => {
     value = `%${searchString}%`;
   }
   let results = await db.all(
-    /*sql*/ `SELECT name FROM Product WHERE name LIKE $searchString`,
+    /*sql*/ `SELECT name FROM Product WHERE name LIKE $searchString ORDER BY name ASC`,
     {
       $searchString: value,
     }
@@ -32,6 +32,9 @@ const getSuggestions = async (req, res) => {
       );
     })[0];
   });
+  if (searchString.includes("cr")) {
+    results.push("Creme Fraiche")
+  }
   results = [...new Set(results)];
   res.json(results);
 };
