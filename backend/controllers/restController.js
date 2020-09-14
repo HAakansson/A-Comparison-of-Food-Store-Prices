@@ -24,11 +24,11 @@ const getSuggestions = async (req, res) => {
       $searchString: value,
     }
   );
-  results = results.map((e) => {
-    return e.name.split(" ").filter((f) => {
+  results = results.map((x) => {
+    return x.name.split(" ").filter((y) => {
       return (
-        (f.includes(searchString[0].toUpperCase() + searchString.slice(1)) ||
-          f.includes(searchString)) && !(/[/&]/.test(f))
+        (y.includes(searchString[0].toUpperCase() + searchString.slice(1)) ||
+          y.includes(searchString)) && !(/[/&]/.test(y))
       );
     })[0];
   });
