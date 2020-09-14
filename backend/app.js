@@ -1,5 +1,7 @@
 const express = require("express");
 const path = require("path");
+const restRoutes = require("./routes/restRoutes");
+const apiRoutes = require("./routes/apiRoutes");
 const port = 3000;
 
 const app = express();
@@ -10,6 +12,9 @@ const server = app.listen(port, (err) => {
   }
   console.log(`Listening to port ${port}.`);
 });
+
+app.use("/rest", restRoutes);
+app.use("/api", apiRoutes);
 
 app.use(express.json()); // Lets us acces the req.body object.
 
