@@ -32,7 +32,7 @@ const getSuggestions = async (req, res) => {
       );
     })[0];
   });
-  if (searchString.includes("cr")) {
+  if (searchString[0] === "c" && searchString[1] === "r") {
     results.push("Creme Fraiche")
   }
   results = [...new Set(results)];
