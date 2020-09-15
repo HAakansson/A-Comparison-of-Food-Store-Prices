@@ -12,7 +12,15 @@ const getDietaryRestrictions = async (req, res) =>{
   let result = await db.all(/*sql*/ `SELECT * FROM Dietary_Restrictions`)
 }
 
+
+const postShoppingList = async (req, res) => {
+
+  //var jsonList = JSON.stringify(req.body);
+  CalculateShoppingList.calcualteTotalCost(req.body);
+}
+
 module.exports = {
   getCategories,
-  getDietaryRestrictions
+  getDietaryRestrictions,
+  postShoppingList
 }
