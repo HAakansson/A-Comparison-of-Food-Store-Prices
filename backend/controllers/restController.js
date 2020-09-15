@@ -9,8 +9,8 @@ const getCategories = async (req, res) => {
 }
 
 const getDietaryRestrictions = async (req, res) =>{
-  let res = await db.all(/*sql*/ `SELECT * FROM Dietary_Restrictions`)
-  return res.json();
+  let result = await db.all(/*sql*/ `SELECT * FROM Dietary_Restrictions`)
+  return res.json(result);
 }
 
 module.exports = {
