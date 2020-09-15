@@ -25,6 +25,17 @@ module.exports = class DataBaseHelper {
       }
     );
   }
+static async getAllProducts(store){
+  let products = await db.all(/*sql*/ `SELECT * FROM Product WHERE store = $store`,
+  {
+    $store: store.split(".")[1]
+  })
+  return products;
+}
+
+  static async removeProducts(toBeDeleted){
+    db.run(/*sql*/ "DELETE FROM product WHERE id IN (" + toBeDeleted.map(x => x.id).join(", ") + ")")
+  }
 
   static async checkIfProductExists(product, store) {
     let dbProduct = await db.get(
