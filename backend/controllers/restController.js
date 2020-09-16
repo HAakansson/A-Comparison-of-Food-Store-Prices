@@ -2,6 +2,7 @@ const DB = require("../DB");
 const path = require("path");
 const dbPath = path.join(__dirname, "../databases/foodStore.db");
 const db = new DB(dbPath);
+const CalculateShoppingList = require('../shopping_list_calculator/CalculateShoppingList');
 
 const getCategories = async (req, res) => {
   await db.all(/*sql*/ `query....osv...`)
