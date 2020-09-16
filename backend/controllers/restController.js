@@ -8,6 +8,13 @@ const getCategories = async (req, res) => {
   //Code here
 }
 
+const getProductsById = async (req, res) => {
+  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.query.s} = code`)
+
+  res.json(result);
+}
+
 module.exports = {
-  getCategories
+  getCategories,
+  getProductsById
 }
