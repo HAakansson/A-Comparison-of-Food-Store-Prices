@@ -7,7 +7,6 @@ const getProducts = async (req, res) => {
   let searchArr = req.query.s ? req.query.s.split(" ") : null;
   let dietArr = req.query.d ? req.query.d.split(",") : null;
   let catArr = req.query.c ? req.query.c.split(",") : null;
-  console.log(catArr);
 
   let searchString = "";
   if (searchArr) {
