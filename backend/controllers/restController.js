@@ -13,26 +13,18 @@ const getSuggestions = async (req, res) => {
   let searchString = req.query.s;
   if (searchString.length <= 1) {
     res.json(null);
-  } else if (searchString.length < 6) {
+  } else if (searchString.length < 5) {
     value = `${searchString}%`;
   } else {
     value = `%${searchString}%`;
   }
   let results = await db.all(
-    /*sql*/ `SELECT name, (CAST("${searchString.length}" AS FLOAT) / name.length) as matchedSearchString  FROM Product WHERE name LIKE $searchString ORDER BY name ASC`,
+    /*sql*/ `SELECT name, (CAST(LENGTH("${searchString}") AS FLOAT) / LENGTH(name)) as matchedSearchString  FROM Product WHERE name LIKE $searchString ORDER BY matchedSearchString DESC LIMIT 30`,
     {
       $searchString: value,
     }
   );
-  results = results.map((x) => {
-    return x.name.split(" ").filter((y) => {
-      return (
-        (y.includes(searchString[0].toUpperCase() + searchString.slice(1)) ||
-          y.includes(searchString)) &&
-        !/[/&]/.test(y)
-      );
-    })[0];
-  });
+  results = results.map((x) => x.name);
   if (searchString[0] === "c" && searchString[1] === "r") {
     results.push("Creme Fraiche");
   }
