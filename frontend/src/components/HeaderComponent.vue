@@ -1,12 +1,14 @@
 <template>
   <div class="header-component">
     <header>
-       <h1>The Price Comparitor</h1>
+       <h1>Prisjämföraren</h1>
        <form>
          <!-- <input v-bind:value="searchedString" class="search-field" type="text" placeholder="Search for product..."/> -->
          <input v-model="searchedString" class="search-field" type="text" placeholder="Search for product..."/>
           <button v-on:click="searchButtonPressed" type="button">Search</button>
        </form>
+
+       <!-- <img src="https://banner2.cleanpng.com/20171217/01f/shopping-cart-png-5a364b6d3217e8.4884266315135076932052.jpg" /> -->
     </header>
   </div>
 </template>
@@ -56,7 +58,7 @@ export default class HeaderComponent extends Vue {
 <style lang="scss" scoped>
 .header-component{
   margin-top: 0px;
-  background-color: pink;
+  background-color: rgb(195, 226, 147);
 }
 
 .search-field{
@@ -66,6 +68,16 @@ export default class HeaderComponent extends Vue {
   width: 800px;
   max-width: 96%;
   margin: 0 auto;
+}
+
+h1 {
+  margin-top: 0px;
+  padding-top: 40px;
+  padding-bottom: 15px;
+  font-size: 45px;
+  text-align: center;
+  color: rgb(75, 104, 104);
+  text-decoration: underline;
 }
 </style>
 
