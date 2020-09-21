@@ -9,8 +9,12 @@ const getCategories = async (req, res) => {
 }
 
 const getDietaryRestrictions = async (req, res) =>{
-  let result = await db.all(/*sql*/ `SELECT * FROM Dietary_Restrictions`)
-  return res.json(result);
+  // let result = await db.all(/*sql*/ `SELECT d.organic, d.gluten, d.vegetarian, d.vegan, d.lactosefree FROM Dietary_Restrictions as d WHERE d.id = 1`)
+  let result = await db.all(/*sql*/`SELECT name FROM PRAGMA_TABLE_INFO('Dietary_Restrictions')`);
+  result = result.slice(1, result.length)
+  result = result.map(x => x.name);
+
+   res.json(result);
 }
 
 module.exports = {
