@@ -10,7 +10,8 @@ export default new Vuex.Store({
       searchString: "?s=",
       categoryString: "&c=",
       dietaryString: "&d="
-    }
+    },
+    products: null,
   },
   mutations: {
   },
