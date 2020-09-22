@@ -14,16 +14,12 @@ export default class SearchField extends Vue {
 
 search = "";
 
-
 @Watch("search")
   onSearchStringChanged(newVal) {
-
     this.$store.state.searchQueries.searchString = "?s=";
     this.$store.state.searchQueries.searchString += newVal;
-    // console.log(this.$store.state.searchQueries);
   }
 }
-
 
 </script>
 
