@@ -49,7 +49,7 @@ export default class HeaderComponent extends Vue {
       name: "Organic"
     }, 
     {
-      name: "Lactosfree"
+      name: "Lactosefree"
     }, 
   ]
 
