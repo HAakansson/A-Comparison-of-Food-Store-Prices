@@ -11,8 +11,11 @@ const getProducts = async (req, res) => {
   let searchString = "";
   if (searchArr) {
     searchArr.forEach((s, i) => {
-      searchString +=
-        i === 0 ? `WHERE p.name LIKE "%${s}%" ` : `AND p.name LIKE "%${s}%" `;
+      if (s[0] === "å" || s[0] === "ä" || s[0] === "ö") {
+        s = s[0].toUpperCase() + s.slice(1);
+      }
+        searchString +=
+          i === 0 ? `WHERE p.name LIKE "%${s}%" ` : `AND p.name LIKE "%${s}%" `;
     });
   }
 
