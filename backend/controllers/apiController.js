@@ -38,7 +38,7 @@ const getProducts = async (req, res) => {
     catString += `${catChecks})`;
   }
 
-  let query = /*sql*/ `SELECT p.id, p.name, p.store, p.unit_price, p.comparison_price, p.comparator, p.display_volume, p.unit_measurement, p.country_of_origin, dr.*, i.*,
+  let query = /*sql*/ `SELECT p.id, p.name, p.store, p.brand, p.unit_price, p.comparison_price, p.comparator, p.display_volume, p.unit_measurement, p.country_of_origin, dr.*, i.*,
     CAST(LENGTH("${searchArr.join(
       " "
     )}") AS FLOAT) / LENGTH(p.name) as matchedSearchString
