@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import { Vue, Component, Watch } from "vue-property-decorator";
+import { Vue, Component } from "vue-property-decorator";
 import Checkbox from "./Checkbox";
 import SearchField from "./SearchField";
 import CategoryField from "./CategoryField";
@@ -34,9 +34,6 @@ import CategoryField from "./CategoryField";
   },
 })
 export default class HeaderComponent extends Vue {
-
-
-  chosenRestrictions = [];
 
   dietaryRestrictions = [
     {
@@ -54,30 +51,7 @@ export default class HeaderComponent extends Vue {
     {
       name: "Lactosfree"
     }, 
-
-    
   ]
-
-
- @Watch("$store.state.searchQueries", { deep: true })
- onSearchQueriesChanged(newVal) {
-
-  let query = newVal.searchString + newVal.categoryString + newVal.dietaryString;
-
-  clearTimeout(this.timer);
-  this.timer = setTimeout(() => {
-      this.searchForProduct(query);
-  }, 1000); 
-  
- }
-
-
-
-  async searchForProduct(query) {
-    //let result = await fetch(`/rest/searchRoute${query}`);
-    console.log(`/rest/searchRoute${query}`);
-  }
-
 
   backToHomePage() {
     if (!this.$route.path === "/")
