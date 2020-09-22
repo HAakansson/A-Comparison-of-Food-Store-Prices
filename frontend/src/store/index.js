@@ -5,6 +5,12 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    searchQueries:
+    {
+      searchString: "?s=",
+      categoryString: "&c=",
+      dietaryString: "&d="
+    }
   },
   mutations: {
   },
