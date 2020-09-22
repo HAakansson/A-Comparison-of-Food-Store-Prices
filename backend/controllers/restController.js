@@ -11,6 +11,13 @@ const getCategories = async (req, res) => {
 const getSuggestions = async (req, res) => {
   let value = "";
   let searchString = req.query.s;
+  if (
+    searchString[0] === "å" ||
+    searchString[0] === "ä" ||
+    searchString[0] === "ä"
+  ) {
+    searchString = searchString[0].toUpperCase() + searchString.slice(1);
+  }
   if (searchString.length <= 1) {
     res.json(null);
   } else if (searchString.length < 5) {
