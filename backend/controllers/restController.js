@@ -14,7 +14,7 @@ const getSuggestions = async (req, res) => {
   if (
     searchString[0] === "å" ||
     searchString[0] === "ä" ||
-    searchString[0] === "ä"
+    searchString[0] === "ö"
   ) {
     searchString = searchString[0].toUpperCase() + searchString.slice(1);
   }
