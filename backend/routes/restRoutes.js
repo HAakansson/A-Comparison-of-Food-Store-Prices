@@ -4,5 +4,7 @@ const restController = require("../controllers/restController");
 
 router.get("/categories", restController.getCategories);
 router.get("/suggestions", restController.getSuggestions);
+router.get("/dietaryRestrictions", restController.getDietaryRestrictions);
+router.post("/shoppingList", restController.postShoppingList);
 
 module.exports = router;

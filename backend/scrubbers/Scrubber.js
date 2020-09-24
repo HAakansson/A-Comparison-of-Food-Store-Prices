@@ -21,13 +21,26 @@ module.exports = class Scrubber {
     console.log(
       `Scrubbing products from ${this.store} and adding to DB started...`
     );
+    let productsInDb = await DataBaseHelper.getAllProducts(this.store);
 
-    // let scrubbed = [];
+    // create hash of new products
+    let productsHash = {};
+    for(let product of products){
+      productsHash[product.code || product.id] = true;
+    }
+    // loop through old products
+    let toBeDeleted = [];
+    for(let product of productsInDb){
+      if(!productsHash[product.code]){
+        toBeDeleted.push(product);
+      }
+    }
+    
+    await DataBaseHelper.removeProducts(toBeDeleted);
     for (let product of products) {
       let dbProduct = await DataBaseHelper.checkIfProductExists(product, this.store);
       // if product exist...
       if (dbProduct) {
-
         // if store is Axfood: 
         if (dbProduct.store === "hemkop" || dbProduct.store === "willys") {
           try {
@@ -67,7 +80,6 @@ module.exports = class Scrubber {
     }
     // return scrubbed;
   }
-
    async isProductUpdatedAxfood(product, dbProduct) {
     // if discount exist on scubbed product...
     if (product.potentialPromotions.length > 0)
