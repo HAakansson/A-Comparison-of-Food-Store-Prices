@@ -1,6 +1,6 @@
 <template>
   <div class="header-component">
-      <h1 @click="backToHomePage">Prisjämföraren</h1>
+      <h1 class="title" @click="backToHomePage">Prisjämföraren</h1>
       <div class="grind-container">
         <div class="grid-item-1">
             <SearchField/>
@@ -37,19 +37,24 @@ export default class HeaderComponent extends Vue {
 
   dietaryRestrictions = [
     {
-      name: "Vegan"
+      name: "Vegan",
+      value: "vegan"
     }, 
     {
-      name: "Vegetarian"
+      name: "Vegetariskt",
+      value: "vegetarian"
     }, 
     {
-      name: "Gluten"
+      name: "Glutenfri",
+      value: "gluten"
     }, 
     {
-      name: "Organic"
+      name: "Ekologiskt",
+      value: "organic"
     }, 
     {
-      name: "Lactosefree"
+      name: "Laktosfri",
+      value: "lactosefree"
     }, 
   ]
 
@@ -82,6 +87,16 @@ export default class HeaderComponent extends Vue {
   text-shadow:  0px -1px black, 1px 0px black, 0px 1px black, -1px 0px black;
 }
 
+.title {
+  cursor: pointer;
+  display: inline-block;
+  width: auto;
+  margin: auto;
+  margin-bottom: 25px;
+  padding: 0;
+  
+}
+
 h1 {
   margin-top: 0;
   padding-top: 50px;
@@ -99,8 +114,9 @@ h1 {
 .grind-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-gap: 5px;
-  padding: 0px 5px;  
+  row-gap: 5px;
+  column-gap: 25px;
+  padding: 0px 160px;  
 }
 
 
