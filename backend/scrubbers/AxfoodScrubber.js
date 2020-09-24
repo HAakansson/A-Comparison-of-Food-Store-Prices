@@ -108,8 +108,8 @@ module.exports = class AxfoodScrubber extends Scrubber {
       let discount = {};
       // discount_price & discount_comarison_price & discount_quantity & discount_max_limit
       if (x.potentialPromotions.length > 0) {
-        discount.price = x.potentialPromotions[0].rewardLabel !== null & x.potentialPromotions[0].rewardLabel !== "" ? parseFloat(x.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")) : null;
-        discount.comparison_price = x.potentialPromotions[0].comparePrice !== null & x.potentialPromotions[0].comparePrice !== "" ? parseFloat(x.potentialPromotions[0].comparePrice.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")): null;
+        discount.price = x.potentialPromotions[0].rewardLabel !== null && x.potentialPromotions[0].rewardLabel !== "" ? parseFloat(x.potentialPromotions[0].rewardLabel.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")) : null;
+        discount.comparison_price = x.potentialPromotions[0].comparePrice !== null && x.potentialPromotions[0].comparePrice !== "" ? parseFloat(x.potentialPromotions[0].comparePrice.replace(/[,]/, ".").replace(/[a-z:\s/]/g, "")): null;
         discount.max_limit = x.potentialPromotions[0].redeemLimitLabel !== null ? parseFloat(x.potentialPromotions[0].redeemLimitLabel.replace(/[\D:\s]/g, "")) : null;
         discount.quantity = x.potentialPromotions[0].conditionLabel !== null && x.potentialPromotions[0].conditionLabel !== "" ? x.potentialPromotions[0].conditionLabel.includes("Spara") ? null : parseFloat(x.potentialPromotions[0].conditionLabel.replace(/[\D:\s]/g, "")) : null;
         discount.requires_membership = x.potentialPromotions[0].campaignType !== null && x.potentialPromotions[0].campaignType !== "" ? x.potentialPromotions[0].campaignType.includes("LOYALTY") ? true : false : false;
