@@ -1,6 +1,6 @@
 <template>
   <div class="category-field">
-      <input type="text" placeholder="Search for category..."/>
+      <input type="text" placeholder="Sök kategori..."/>
   </div>
 </template>
 
