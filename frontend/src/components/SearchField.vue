@@ -1,6 +1,6 @@
 <template>
   <div class="search-field">
-      <input v-model="search" type="text" placeholder="Search for product..."/>
+      <input v-model="search" type="text" placeholder="Sök produkt..."/>
   </div>
 </template>
 
@@ -29,7 +29,6 @@ input {
   width: 100%;
   height: 30px;
   font-size: 14px;
-  
 }
 
 </style>
