@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <h1>Articles</h1>
+    <h1>Produkter</h1>
     <div>
       <ArticleList />
     </div>
@@ -28,14 +28,14 @@ export default class HomePage extends Vue {
 
 <style lang="scss" scoped>
 .home-page {
+
   h1 {
-    color: red;
+    text-align: center;
   }
 
   div {
-    h1 {
-      color: blue;
-    }
+    background-color: #f3f3f3;
+    
   }
 }
 </style>
