@@ -30,5 +30,13 @@ name;
   display: flex;
   margin: 0 5px;
 }
+
+.diet-checkbox input {
+    cursor: pointer;
+}
+
+.diet-checkbox label {
+  cursor: pointer;
+}
 </style>
 
