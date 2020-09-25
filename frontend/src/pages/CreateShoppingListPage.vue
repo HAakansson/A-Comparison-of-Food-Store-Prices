@@ -1,6 +1,6 @@
 <template>
   <div id="create-shopping-list-page">
-    <form class="shopping-list-info">
+    <form class="shopping-list-info-form">
       <label for="shopping-list-name">Shoppinglistans namn: </label>
       <input
         id="shopping-list-name"
@@ -26,7 +26,6 @@
 
 <script>
 import { Vue, Component } from "vue-property-decorator";
-import { v4 as uuid4 } from "uuid";
 
 @Component
 export default class createShoppingListPage extends Vue {
@@ -35,32 +34,44 @@ export default class createShoppingListPage extends Vue {
   feedback = "";
 
   resetForm() {
-    document.querySelector(".shopping-list-info").reset();
+    this.shoppingListName = "";
+    this.createShoppingList = "";
   }
 
-  saveList() {
+  async saveList() {
     if (!this.shoppingListName) {
       this.feedback = "Du måste ange ett namn på din shoppinglista...";
       setTimeout(() => {
         this.feedback = "";
       }, 2000);
     } else {
-      this.$store.commit("addToShoppingLists", {
-        id: uuid4(),
+      let newShoppingList = {
         name: this.shoppingListName,
         creator: this.creator,
-        content: [],
-      });
-      this.$router.push("/shoppinglists");
+      };
+
+      let newShoppingListId = await this.createShoppingList(newShoppingList);
+      this.$router.push(`/shoppinglists/${newShoppingListId}`);
     }
   }
 
-  mounted() {
-    document.querySelector("#shopping-list-name").focus();
+  async createShoppingList(newShoppingList) {
+    let result = await fetch("/rest/shoppingLists-create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newShoppingList),
+    });
+
+    result = await result.json();
+    return result;
   }
 
   backToShoppingListsPage() {
     this.$router.push("/shoppinglists");
+  }
+
+  mounted() {
+    document.querySelector("#shopping-list-name").focus();
   }
 }
 </script>

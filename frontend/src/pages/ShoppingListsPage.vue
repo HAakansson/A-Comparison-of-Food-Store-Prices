@@ -6,16 +6,15 @@
     <h2>Your Shopping Lists</h2>
 
     <div class="shopping-lists-container">
-      <p v-if="shoppingList.length === 0">
+      <p v-if="!shoppingLists">
         You currently have no shopping lists.
       </p>
       <ShoppingList
         class="shopping-list"
-        v-for="shoppingList in shoppingList"
+        v-for="shoppingList in shoppingLists"
         :key="shoppingList.id"
         :shoppingList="shoppingList"
         @remove-shoppingList="removeShoppingList"
-        @click="goToShoppingListDetails"
       />
     </div>
   </div>
@@ -31,25 +30,40 @@ import ShoppingList from "../components/shopping_list_page/ShoppingList";
   },
 })
 export default class ShoppingListPage extends Vue {
-  get shoppingList() {
-    return this.$store.state.shoppingLists;
-  }
+  shoppingLists = null;
 
   goToCreateShoppingList() {
     this.$router.push("/shoppinglists-create");
   }
 
-  removeShoppingList(id) {
-    console.log("before", this.$store.state.shoppingLists);
-    let updatedShoppingLists = this.$store.state.shoppingLists.filter((e) => {
-      return e.id !== id;
+  async removeShoppingList(id) {
+    await this.deleteShoppingList(id);
+
+    this.shoppingLists = this.shoppingLists.filter((list) => {
+      return id !== list.id;
     });
 
-    this.$store.commit("updateShoppingLists", updatedShoppingLists);
-    console.log("after", this.$store.state.shoppingLists);
+    if (this.shoppingLists.length === 0) {
+      this.shoppingLists = null;
+    }
   }
 
-  goToShoppingListDetails() {}
+  async getShoppingLists() {
+    let results = await fetch("/rest/shoppingLists");
+    results = await results.json();
+    return results;
+  }
+
+  async deleteShoppingList(id) {
+    await fetch(`/rest/shoppingLists/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  async created() {
+    this.shoppingLists = await this.getShoppingLists();
+  }
 }
 </script>
 

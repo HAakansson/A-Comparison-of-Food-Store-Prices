@@ -81,25 +81,105 @@ const getBrandSuggestions = async (req, res) => {
   );
 
   results = removeDoubletBrands(results);
-  results = results.map(r => r.brand)
+  results = results.map((r) => r.brand);
   res.json(results);
 };
 
 const getCategories = async (req, res) => {
   let results = await db.all(/*sql*/ `SELECT DISTINCT name, 
     CAST(LENGTH("${req.query.search}") AS FLOAT)/LENGTH(name) as match_percentage,
-    CASE WHEN name LIKE "${req.query.search}%"
-    THEN true ELSE false END firstphrase
     FROM Category WHERE name LIKE "%${req.query.search}%"
-    ORDER BY firstphrase DESC, match_percentage DESC`);
+    ORDER BY match_percentage DESC`);
 
   res.json(results);
 };
 
+const postCreateShoppingList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `INSERT INTO ShoppingLists (name, creator, timestamp) VALUES ($name, $creator, $timestamp)`,
+    {
+      $name: req.body.name,
+      $creator: req.body.creator || null,
+      $timestamp: new Date().getTime(),
+    }
+  );
+
+  let id = result.lastID;
+  res.json(id);
+};
+
+const getAllShoppingLists = async (req, res) => {
+  let result = await db.all(/*sql*/ `SELECT * FROM ShoppingLists`);
+  res.json(result);
+};
+
+const getSingleShoppingList = async (req, res) => {
+  let result = await db.all(
+    /*sql*/ `SELECT * FROM ShoppingListItems WHERE shoppingListId = $id`,
+    {
+      $id: req.params.shoppingListId,
+    }
+  );
+  res.json(result);
+};
+
+const postRowToList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `INSERT INTO ShoppingListItems (product, brand, amount, unit, shoppingListId) VALUES ($product, $brand, $amount, $unit, $shoppingListId)`,
+    {
+      $product: req.body.product,
+      $brand: req.body.brand,
+      $amount: req.body.amount,
+      $unit: req.body.unit,
+      $shoppingListId: req.params.shoppingListId,
+    }
+  );
+  res.json(result.lastID);
+};
+
+const getNewRowFromShoppingList = async (req, res) => {
+  let result = await db.get(
+    /*sql*/ `SELECT * FROM ShoppingListItems WHERE id = $id`,
+    {
+      $id: req.params.rowId,
+    }
+  );
+  res.json(result);
+};
+
+const deleteRowFromList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `
+    DELETE FROM ShoppingListItems WHERE id = $id
+  `,
+    {
+      $id: req.params.rowId,
+    }
+  );
+  res.json(result.changes);
+};
+
+const deleteShoppingList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `DELETE FROM ShoppingLists WHERE id = $id`,
+    {
+      $id: req.params.shoppingListId,
+    }
+  );
+  res.json(result.changes);
+};
+
 module.exports = {
+  postCreateShoppingList,
+  postShoppingList,
+  postRowToList,
   getCategories,
   getProductSuggestions,
   getDietaryRestrictions,
-  postShoppingList,
   getBrandSuggestions,
+  getAllShoppingLists,
+  getSingleShoppingList,
+  getNewRowFromShoppingList,
+  deleteRowFromList,
+  deleteShoppingList,
 };
