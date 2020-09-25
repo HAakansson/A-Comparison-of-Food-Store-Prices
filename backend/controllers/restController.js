@@ -47,7 +47,8 @@ const getProductSuggestions = async (req, res) => {
     FROM Product 
     WHERE brand LIKE $searchString
     OR name LIKE $searchString 
-    ORDER BY matchedSearchString DESC`,
+    ORDER BY matchedSearchString DESC
+    LIMIT 100`,
     {
       $searchString: value,
     }
@@ -71,7 +72,7 @@ const getProductSuggestions = async (req, res) => {
 
 const getBrandSuggestions = async (req, res) => {
   let brand = req.query.b;
-  let brandString = `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%`;
+  let brandString = req.query.b ? `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%` : "";
 
   let results = await db.all(
     /*sql*/ `SELECT brand, CAST(LENGTH("${brand}") AS FLOAT) / LENGTH (brand) AS matchedSearchString
