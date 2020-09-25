@@ -11,7 +11,7 @@
         <div class="grid-item-3">
           <div class="diet-checkboxes" v-for="(diet, i) in dietaryRestrictions" :key="i">
               
-            <Checkbox :name="diet.name"/>
+            <Checkbox :name="diet.name" :dietVal="diet.value"/>
 
           </div>
         </div>
