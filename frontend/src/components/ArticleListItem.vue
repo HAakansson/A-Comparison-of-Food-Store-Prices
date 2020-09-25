@@ -7,6 +7,7 @@
     <div class="container">
       <h4 class="article"><b>{{article.name}}</b></h4>
       <p class="brand">{{article.brand !== "Unknown" ? article.brand : ""}} {{article.display_volume !== "Unknown" ? article.display_volume : ""}} {{article.unit_measurement !== "Unknown" ? article.unit_measurement : ""}}</p>
+      <p class="membership">{{requiresMembership}}</p>
       <p class="discount-label">{{discountLabel}}</p>
       <p class="price" :class="{discount: article.discount_price}">{{price}}:-</p>
       <p class="comp-price">Jmf pris {{comparisonPrice}}:- /{{article.comparator}}</p>
@@ -63,6 +64,13 @@ get comparisonPrice() {
   return this.article.discount_comparison_price ? this.article.discount_comparison_price : this.article.comparison_price;
 }
 
+
+get requiresMembership() {
+
+  if (this.article.discount_requires_membership === 1) { return "Kräver medlemskap"; }
+  else { return ""; }
+
+}
 
 setDecimalNumber(price) {
   
@@ -177,6 +185,11 @@ object-fit: contain;
   color: white;
   height: 35px;
   text-align: center;
+}
+
+.membership {
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
 @media (max-width: 992px) {
