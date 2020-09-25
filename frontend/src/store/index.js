@@ -14,6 +14,10 @@ export default new Vuex.Store({
     products: null,
   },
   mutations: {
+    updateDietaryString(state, data) {
+      state.searchQueries.dietaryString += data;
+    //   state.searchQueries.dietaryString += ",";
+    }
   },
   actions: {
   },
