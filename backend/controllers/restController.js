@@ -86,7 +86,8 @@ const getBrandSuggestions = async (req, res) => {
 };
 
 const getProductsById = async (req, res) => {
-  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`)
+  let result = await db.get(/*sql*/ `SELECT * FROM Product AS p JOIN Dietary_Restrictions as dr ON p.dietary_restrictions_id = dr.id
+    JOIN Image as i ON p.image_id = i.id WHERE ${req.params.productId} = p.id`)
 
   res.json(result);
 }

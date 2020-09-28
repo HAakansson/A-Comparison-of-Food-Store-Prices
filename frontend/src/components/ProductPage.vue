@@ -1,7 +1,7 @@
 <template>
 <div>
-<p>Product page</p>
-{{this.$route.params.productId}}
+  <img class="image" :src="product.img_url" alt="Picture">
+  <h2>{{product.name}}</h2>
 </div>
 </template>
 
@@ -26,3 +26,9 @@ export default class ProductPage extends Vue {
 }
 
 </script>
+
+<style scoped lang="scss">
+.image{
+  border: red 2px solid;
+}
+</style>
