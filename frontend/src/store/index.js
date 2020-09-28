@@ -16,7 +16,9 @@ export default new Vuex.Store({
   mutations: {
     updateDietaryString(state, data) {
       state.searchQueries.dietaryString += data;
-    //   state.searchQueries.dietaryString += ",";
+    },
+    replaceDietaryString(state, data){
+      state.searchQueries.dietaryString = data;
     }
   },
   actions: {
