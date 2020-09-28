@@ -85,6 +85,12 @@ const getBrandSuggestions = async (req, res) => {
   res.json(results);
 };
 
+const getProductsById = async (req, res) => {
+  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`)
+
+  res.json(result);
+}
+
 const getCategories = async (req, res) => {
   let results = await db.all(/*sql*/ `SELECT DISTINCT name, 
     CAST(LENGTH("${req.query.search}") AS FLOAT)/LENGTH(name) as match_percentage,
@@ -102,4 +108,5 @@ module.exports = {
   getDietaryRestrictions,
   postShoppingList,
   getBrandSuggestions,
+  getProductsById
 };

@@ -7,5 +7,7 @@ router.get("/productSuggestions", restController.getProductSuggestions);
 router.get("/brandSuggestions", restController.getBrandSuggestions);
 router.get("/dietaryRestrictions", restController.getDietaryRestrictions);
 router.post("/shoppingList", restController.postShoppingList);
+router.get("/products/:productId", restController.getProductsById);
+
 
 module.exports = router;
