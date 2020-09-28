@@ -1,5 +1,5 @@
 <template>
-  <div class="card">
+  <div class="card" @click="goToProduct">
     <svg v-if="isSwedish" class="swedish-flag" height="25" width="25">    
       <image href="https://upload.wikimedia.org/wikipedia/en/4/4c/Flag_of_Sweden.svg" height="25" width="25"/>
     </svg>
@@ -32,7 +32,6 @@ get isSwedish() {
 }
 
 get price() {
-
   this.article.unit_price = this.setDecimalNumber(this.article.unit_price);
   this.article.discount_price = this.setDecimalNumber(this.article.discount_price);
 
@@ -79,21 +78,16 @@ setDecimalNumber(price) {
   return regex.test(price) ? price + "0" : price;
 }
 
+goToProduct(){
+  this.$router.push(`products/${this.article.id}`)
 
-
-
+}
 
 @Prop({
   type: Object, 
   required: true 
 }) 
 article; 
-
-
-
-onCreate() {
-  console.log("ARticle", this.article);
-}
 
 }
 
