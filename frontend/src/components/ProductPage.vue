@@ -1,7 +1,8 @@
 <template>
 <div>
-<p>Product page</p>
-{{this.$route.params.productId}}
+<img :src="product.image_url">
+<h2>{{product.name}}</h2>
+<h2>{{product.brand}}</h2>
 </div>
 </template>
 
