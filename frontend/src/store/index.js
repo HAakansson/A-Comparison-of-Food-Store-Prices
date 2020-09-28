@@ -5,7 +5,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    shoppingLists: []
+    shoppingLists: [],
+    searchQueries:
+    {
+      searchString: "?s=",
+      categoryString: "&c=",
+      dietaryString: "&d="
+    },
+    products: null,
 
   },
   mutations: {
@@ -14,6 +21,10 @@ export default new Vuex.Store({
     },
     updateShoppingLists(state, data) {
       state.shoppingLists = data;
+    },
+    updateDietaryString(state, data) {
+      state.searchQueries.dietaryString += data;
+    //   state.searchQueries.dietaryString += ",";
     }
   },
   actions: {
