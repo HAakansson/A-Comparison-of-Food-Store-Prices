@@ -14,4 +14,5 @@ router.get("/shoppingLists/:shoppingListId", restController.getSingleShoppingLis
 router.get("/shoppingLists/row/:rowId", restController.getNewRowFromShoppingList)
 router.delete("/shoppingList/row/:rowId", restController.deleteRowFromList)
 router.delete("/shoppingLists/:shoppingListId", restController.deleteShoppingList)
+
 module.exports = router;

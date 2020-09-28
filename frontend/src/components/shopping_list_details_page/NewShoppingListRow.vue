@@ -58,6 +58,7 @@ export default class NewShoppingListRow extends Vue {
       let product = this.products.find((p) => {
         return p.name === event.target.value;
       });
+      console.log(product);
       this.unit = product.unit_measurement;
     } else {
       this.unit = null;

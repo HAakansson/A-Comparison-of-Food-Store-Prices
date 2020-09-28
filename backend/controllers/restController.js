@@ -43,7 +43,7 @@ const getProductSuggestions = async (req, res) => {
   }
 
   let results = await db.all(
-    /*sql*/ `SELECT id, name, unit_measurement, brand, (CAST(LENGTH($searchString) AS FLOAT) / LENGTH(name)) as matchedSearchString
+    /*sql*/ `SELECT id, name, unit_measurement, brand, store, (CAST(LENGTH($searchString) AS FLOAT) / LENGTH(name)) as matchedSearchString
     FROM Product 
     WHERE brand LIKE $searchString
     OR name LIKE $searchString 
