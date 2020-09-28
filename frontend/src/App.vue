@@ -18,7 +18,7 @@ import HeaderComponent from "./components/HeaderComponent.vue";
 export default class App extends Vue {}
 </script>
 
-<style>
+<style lang="scss">
 * {
   box-sizing: border-box;
 }
@@ -31,6 +31,17 @@ body {
 
 #app {
   background-color: #f3f3f3;
+  button {
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0.3em;
+    &:hover {
+      opacity: 0.6;
+    }
+  }
 }
 
 </style>

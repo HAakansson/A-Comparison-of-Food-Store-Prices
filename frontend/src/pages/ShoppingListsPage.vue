@@ -1,9 +1,11 @@
 <template>
   <div id="shopping-lists-page">
     <div class="buttons">
-      <button @click="goToCreateShoppingList">Create Shopping List</button>
+      <button class="create-shopping-list" @click="goToCreateShoppingList">
+        <span>Skapa en shoppinglista</span> <i class="material-icons">create</i>
+      </button>
     </div>
-    <h2>Your Shopping Lists</h2>
+    <h2 class="header">Dina Shoppinglistor</h2>
 
     <div class="shopping-lists-container">
       <p v-if="!shoppingLists">
@@ -69,8 +71,33 @@ export default class ShoppingListPage extends Vue {
 
 <style lang="scss" scoped>
 #shopping-lists-page {
-  .shopping-list {
-    cursor: pointer;
+  margin: 1em 4em;
+  .header {
+    text-align: center;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    .create-shopping-list {
+      align-items: center;
+      display: flex;
+      background: green;
+      color: white;
+      span,
+      i {
+        margin: 0 5px;
+      }
+    }
+  }
+
+  .shopping-lists-container {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 2em 0;
+    .shopping-list {
+      cursor: pointer;
+    }
   }
 }
 </style>

@@ -1,28 +1,14 @@
 <template>
   <div class="shopping-list-row">
-    <input
-      class="readonly"
-      type="text"
-      placeholder="Skriv in varumärke..."
-      readonly
-      v-model="brand"
-    />
-    <input
-      class="readonly"
-      type="text"
-      placeholder="Skriv in produkt..."
-      readonly
-      v-model="product"
-    />
-    <input
-      class="readonly"
-      type="text"
-      placeholder="Skriv in mängd..."
-      readonly
-      v-model="amount"
-    />
-    <span>{{ shoppingListRow.unit }}</span>
-    <button class="remove" @click="removeRow">Ta bort rad</button>
+    <div class="column brand">{{ shoppingListRow.brand }}</div>
+    <div class="column product">{{ shoppingListRow.product }}</div>
+    <div class="column amount">{{ shoppingListRow.amount }}</div>
+    <div class="column unit">{{ shoppingListRow.unit }}</div>
+    <div class="buttons">
+      <button class="remove-button" @click="removeRow">
+        <span>Ta bort rad</span><i class="material-icons">delete</i>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -49,7 +35,7 @@ export default class ShoppingListRow extends Vue {
 
   async removeRow() {
     await this.deleteRowFromList(this.shoppingListRow.id);
-    this.$emit("row-deleted", this.shoppingListRow.id)
+    this.$emit("row-deleted", this.shoppingListRow.id);
   }
 
   async deleteRowFromList(id) {
@@ -63,9 +49,24 @@ export default class ShoppingListRow extends Vue {
 
 <style lang="scss" scoped>
 .shopping-list-row {
-  .readonly {
-    background: lightgray;
-    border-color: lightgray;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 20% 20% 10% 5% 1fr;
+  margin: 0 0 1em 0;
+  .column {
+    border: 1px solid black;
+    padding: 0.5em;
+    text-align: center;
+  }
+  .buttons {
+    display: flex;
+    margin: 0 1em;
+    .remove-button {
+      align-items: center;
+      display: flex;
+      background: red;
+      color: white;
+    }
   }
 }
 </style>

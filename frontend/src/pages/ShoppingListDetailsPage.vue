@@ -2,12 +2,14 @@
   <div id="shopping-list-details">
     <div v-if="shoppingList" class="shopping-list-container">
       <ShoppingListRow
+      class="row"
         v-for="row in shoppingList"
         :key="row.id"
         :shoppingListRow="row"
         @row-deleted="deleteRowFromShoppingList"
       />
       <NewShoppingListRow
+      class="row"
         :shoppingListId="shoppingListId"
         @new-row-added="updateShoppingList"
       />
@@ -73,4 +75,11 @@ export default class ShoppingListDetailsPage extends Vue {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+#shopping-list-details {
+  margin: 2em 2em;
+  .row {
+
+  }
+}
+</style>
