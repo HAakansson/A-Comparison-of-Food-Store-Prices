@@ -27,3 +27,9 @@ export default class ProductPage extends Vue {
 }
 
 </script>
+
+<style scoped lang="scss">
+.image{
+  border: red 2px solid;
+}
+</style>
