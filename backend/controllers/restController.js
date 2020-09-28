@@ -86,7 +86,7 @@ const getBrandSuggestions = async (req, res) => {
 };
 
 const getProductsById = async (req, res) => {
-  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = code`)
+  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`)
 
   res.json(result);
 }
