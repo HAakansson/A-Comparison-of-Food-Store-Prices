@@ -1,6 +1,7 @@
 <template>
   <form class="new-shopping-list-row-form">
     <input
+      class="brand-input"
       list="brands"
       type="text"
       placeholder="Skriv in varumärke..."
@@ -13,10 +14,19 @@
       v-model="product"
       @blur="getProductUnitMeasurement"
     />
-    <input type="text" placeholder="Skriv in mängd..." v-model="amount" />
-    <span v-if="unit">{{ unit }}</span>
-    <button class="clear-inputs" @click.prevent="resetInputs">Rensa</button>
-    <button class="save" @click.prevent="save">Spara ny rad</button>
+    <input
+      class="amount-input"
+      type="text"
+      placeholder="Skriv in mängd..."
+      v-model="amount"
+    />
+    <div class="unit-container">
+      <span v-if="unit">{{ unit }}</span>
+    </div>
+    <div class="buttons">
+      <button class="clear-inputs" @click.prevent="resetInputs"><span>Rensa</span><i class="material-icons">clear</i></button>
+      <button class="save" @click.prevent="save"><span>Spara ny rad</span><i class="material-icons">add_circle_outline</i></button>
+    </div>
     <p v-if="feedback" class="feedback">{{ feedback }}</p>
 
     <datalist id="brands">
@@ -128,14 +138,48 @@ export default class NewShoppingListRow extends Vue {
 
 <style lang="scss" scoped>
 .new-shopping-list-row-form {
-  .clear-inputs,
-  .save {
-    display: none;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 20% 20% 10% 5% 1fr;
+  margin: 0 0 1em 0;
+  input {
+    padding: 0.5em;
+  }
+  .brand-unput {
+    grid-column: 1/2;
+  }
+  .product-inut {
+    grid-column: 2/3;
+  }
+  .amount-input {
+    grid-column: 3/4;
+  }
+  .unit-container {
+    grid-column: 4/5;
+    text-align: center;
+  }
+  .buttons {
+    grid-column: 5/6;
+    display: flex;
+    margin: 0 1em;
+    .clear-inputs,
+    .save {
+      display: none;
+      margin: 0 1em 0 0;
+    }
   }
   &:focus-within {
     .clear-inputs,
     .save {
-      display: inline;
+      align-items: center;
+      display: inline-flex;
+      color: white;
+    }
+    .clear-inputs {
+      background: blue;
+    }
+    .save {
+      background: green;
     }
   }
 }

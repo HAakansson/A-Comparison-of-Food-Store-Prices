@@ -1,8 +1,8 @@
 <template>
   <div class="shopping-list-row">
-    <div class="column brand">{{ shoppingListRow.brand }}</div>
+    <div class="column brand">{{ shoppingListRow.brand ? shoppingListRow.brand : "-" }}</div>
     <div class="column product">{{ shoppingListRow.product }}</div>
-    <div class="column amount">{{ shoppingListRow.amount }}</div>
+    <div class="column amount">{{ shoppingListRow.amount ? shoppingListRow.amount : "-"  }}</div>
     <div class="column unit">{{ shoppingListRow.unit }}</div>
     <div class="buttons">
       <button class="remove-button" @click="removeRow">
@@ -55,6 +55,7 @@ export default class ShoppingListRow extends Vue {
   margin: 0 0 1em 0;
   .column {
     border: 1px solid black;
+    min-height: 36px;
     padding: 0.5em;
     text-align: center;
   }
