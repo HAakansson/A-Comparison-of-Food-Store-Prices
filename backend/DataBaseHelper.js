@@ -6,8 +6,9 @@ const db = new DB(dbPath);
 module.exports = class DataBaseHelper {
   static async checkIfCategoryExists(category) {
     let categoryExists = await db.get(
-      /*sql*/ `SELECT * FROM Category WHERE categoryCode = $categoryCode`,
-      { $categoryCode: category.categoryCode }
+      /*sql*/ `SELECT * FROM Category WHERE categoryCode = $categoryCode AND store = $store`,
+      { $categoryCode: category.categoryCode,
+      $store: category.store }
     );
     return categoryExists ? true : false;
   }
@@ -151,8 +152,9 @@ static async getAllProducts(store){
   static async insertDataIntoProductsXCategories(product, productId) {
     for (let category of product.extra_info.categories) {
       let result = await db.get(
-        /*sql*/ `SELECT id FROM Category WHERE categoryCode = $categoryCode`,
-        { $categoryCode: category.categoryCode }
+        /*sql*/ `SELECT id FROM Category WHERE categoryCode = $categoryCode AND store=$store`,
+        { $categoryCode: category.categoryCode,
+        $store: product.store }
       );
       if (result) {
         await db.run(
