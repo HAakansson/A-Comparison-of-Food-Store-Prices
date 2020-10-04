@@ -1,3 +1,4 @@
+const fetch = require("node-fetch");
 const Scrubber = require("./Scrubber");
 
 module.exports = class MatHemScrubber extends Scrubber {
@@ -7,7 +8,7 @@ module.exports = class MatHemScrubber extends Scrubber {
 
   translateSchema = {
     code: (x) => x.id,
-    name: (x) => x.name,
+    name: (x) => x.fullName,
     store: () => this.store.split(".")[1],
     brand: (x) => x.brand.name || "Unknown",
     image_url: (x) => x.images.ORIGINAL,
@@ -38,10 +39,23 @@ module.exports = class MatHemScrubber extends Scrubber {
           })
         : false;
     },
-    extra_info: (x) => {
+    extra_info: async (x) => {
       let information = {};
+
+      let data;
+      let rawData = await fetch(
+        `https://api.mathem.io/product-search/noauth/search/detail/10/${x.id}`
+      ).catch((err) => {
+        console.log(err);
+      });
+      // If article number in deep article info does not match the article number from shallow article info, this will stop the operation and go to the next iteration, check scrubber class for more info.
+      if (rawData.status === 400) {
+        return;
+      }
+      data = await rawData.json();
+
       information.country_of_origin = x.origin ? x.origin.name : "Unknown";
-      information.desc = x.fullName;
+      information.desc = data.info.PRODUCT_DESCRIPTION;
       information.vegan = x.badges.length > 0 ? x.badges.some((y) => { return y.name === "Vegansk"; }) : false;
       information.vegetarian = information.vegan === true ? true : x.categoryAncestry.some((y) => { return y.name.includes("Vegetarisk") });
       information.categories = x.categoryAncestry.map((x) => {

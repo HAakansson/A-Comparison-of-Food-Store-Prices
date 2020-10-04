@@ -19,26 +19,34 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
     data = await data.json();
     let categoriesArrayForTheDB = []; // Cointains ALL the categories that goes in to the DB.
     let categoriesArrayForGetProducts = []; /* Only containts the top layer of categories that is going to be used to get all the products. */
+    /*
     categoriesArrayForTheDB.push({
       name: data.title,
       url: "Unknown",
       store: this.store.split(".")[1],
       categoryCode: data.id,
     });
+    */
     data.children.forEach((c) => {
+      
       categoriesArrayForTheDB.push({
         name: c.title,
         url: c.url,
         store: this.store.split(".")[1],
         categoryCode: c.id,
+        rank: 0,
+        parent: null,
       });
       categoriesArrayForGetProducts.push(c.url);
       c.children.forEach((cc) => {
+
         categoriesArrayForTheDB.push({
           name: cc.title,
           url: cc.url,
           store: this.store.split(".")[1],
           categoryCode: cc.id,
+          rank: 1,
+          parent: c.id,
         });
         if (cc.children.length > 0) {
           cc.children.forEach((ccc) => {
@@ -47,6 +55,8 @@ module.exports = class AxfoodHarvester extends StoreHarvester {
               url: ccc.url,
               store: this.store.split(".")[1],
               categoryCode: ccc.id,
+              rank: 2,
+              parent: cc.id,
             });
           });
         }

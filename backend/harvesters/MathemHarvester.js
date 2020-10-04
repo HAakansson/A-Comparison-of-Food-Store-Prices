@@ -1,7 +1,6 @@
 const StoreHarvester = require("./StoreHarvester");
 const DataBaseHelper = require("../DataBaseHelper");
 const fetch = require("node-fetch");
-const fs = require("fs");
 
 module.exports = class MathemHarvester extends StoreHarvester {
   constructor() {
@@ -24,6 +23,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
         store: this.store.split(".")[1],
         url: c1.id,
         categoryCode: c1.id,
+        rank: 0,
+        parent: null,
       });
       categoriesArrayForGetProducts.push({
         id: c1.id,
@@ -35,6 +36,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
           store: this.store.split(".")[1],
           url: c2.id,
           categoryCode: c2.id,
+          rank: 1,
+          parent: c1.id,
         });
         if (c2.children.length > 0) {
           c2.children.forEach((c3) => {
@@ -43,6 +46,8 @@ module.exports = class MathemHarvester extends StoreHarvester {
               store: this.store.split(".")[1],
               url: c3.id,
               categoryCode: c3.id,
+              rank: 2,
+              parent: c2.id,
             });
           });
         }
