@@ -11,7 +11,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class Checkbox extends Vue {
-checked;
+checked = null;
 
 onCheckboxClicked() {
   let newVal = this.dietVal;
