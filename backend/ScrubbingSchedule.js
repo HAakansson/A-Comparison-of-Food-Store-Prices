@@ -16,6 +16,7 @@ module.exports = class ScrubbingSchedule{
 
  static checkIfHarvestingIsNeeded(){
     let lastScan;
+    
     try{
       lastScan = fs.readFileSync('timestamp.json', 'utf-8')
     }
