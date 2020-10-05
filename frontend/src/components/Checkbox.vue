@@ -11,37 +11,33 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class Checkbox extends Vue {
-
-checked;
+checked = null;
 
 onCheckboxClicked() {
+  let newVal = this.dietVal;
 
-  // TODO: send "gluten"/value to store...
-console.log("CLICKED", this.checked);
-//console.log("val", this.dietVal);
-
-
-let newVal = this.dietVal + ",";
-console.log(newVal);
-
-console.log("Inclues ", !this.$store.state.searchQueries.dietaryString.includes(this.dietVal));
-
-if (this.checked && !this.$store.state.searchQueries.dietaryString.includes(this.dietVal))
-{
-  this.$store.commit("updateDietaryString", newVal);
+  if(this.checked){  
+  console.log("Includes ", !this.$store.state.searchQueries.dietaryString.includes(this.dietVal));
+  if(this.$store.state.searchQueries.dietaryString !== "&d="){
+    newVal = "," + this.dietVal
+  }
+  if (!this.$store.state.searchQueries.dietaryString.includes(this.dietVal))
+  {
+    this.$store.commit("updateDietaryString", newVal);
+  }
 }
-
-//console.log("check", event.checked);
-
+else{
+  if(this.$store.state.searchQueries.dietaryString.includes(this.dietVal)){
+    let oldVal = this.$store.state.searchQueries.dietaryString;
+    newVal = oldVal.replace(this.dietVal, "");
+    newVal = newVal.replace(/,+(?=,|$)/g, '');
+    if(newVal.charAt(3) === ","){
+      newVal = newVal.replace(/[, ]/, "")
+    }
+    this.$store.commit("replaceDietaryString", newVal)
+  }
 }
-
-// @Watch("search")
-//   onSearchStringChanged(newVal) {
-//     this.$store.state.searchQueries.searchString = "?s=";
-//     this.$store.state.searchQueries.searchString += newVal;
-//   }
-// }
-
+}
 
 @Prop({
   type: String,
