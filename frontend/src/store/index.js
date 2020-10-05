@@ -1,19 +1,35 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     shoppingLists: [],
-    searchQueries:
-    {
+    searchQueries: {
       searchString: "?s=",
       categoryString: "&c=",
-      dietaryString: "&d="
+      dietaryString: "&d=",
     },
     products: null,
 
+    storeComparisonArray: [
+      {
+        name: "Willys",
+        sum: 5000,
+        products: [],
+      },
+      {
+        name: "Hemköp",
+        sum: 4600,
+        products: [],
+      },
+      {
+        name: "Mathem",
+        sum: 4800,
+        products: [],
+      },
+    ],
   },
   mutations: {
     addToShoppingLists(state, data) {
@@ -25,12 +41,10 @@ export default new Vuex.Store({
     updateDietaryString(state, data) {
       state.searchQueries.dietaryString += data;
     },
-    replaceDietaryString(state, data){
+    replaceDietaryString(state, data) {
       state.searchQueries.dietaryString = data;
-    }
+    },
   },
-  actions: {
-  },
-  modules: {
-  }
-})
+  actions: {},
+  modules: {},
+});

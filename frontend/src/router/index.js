@@ -5,6 +5,7 @@ import ArticlePage from "@/pages/ArticlePage";
 import ShoppingListsPage from "@/pages/ShoppingListsPage";
 import CreateShoppingListPage from "@/pages/CreateShoppingListPage";
 import ShoppingListDetailsPage from "@/pages/ShoppingListDetailsPage";
+import StoreComparisonPage from "@/pages/StoreComparisonPage";
 
 Vue.use(VueRouter);
 
@@ -34,6 +35,11 @@ const routes = [
     path: "/shoppinglists/:shoppingListId",
     name: "ShoppingListDetailsPage",
     component: ShoppingListDetailsPage,
+  },
+  {
+    path: "/store-comparison-page",
+    name: "StoreComparisonPage",
+    component: StoreComparisonPage,
   },
 ];
 
