@@ -36,12 +36,10 @@ get price() {
   this.article.unit_price = this.setDecimalNumber(this.article.unit_price);
   this.article.discount_price = this.setDecimalNumber(this.article.discount_price);
 
-  if (this.article.discount_quantity !== null && this.article.discount_quantity < 99) {
-      return this.article.discount_price ? (this.article.discount_price * this.article.discount_quantity).toFixed(2) : this.article.unit_price;    
-  } else {
-      return this.article.discount_price ? this.article.discount_price : this.article.unit_price;
+  return this.article.discount_price ? this.article.discount_price : this.article.unit_price;
+  
   }
-}
+
 
 get discountLabel() {
 
