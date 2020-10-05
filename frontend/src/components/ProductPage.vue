@@ -37,8 +37,6 @@ export default class ProductPage extends Vue {
   async getProductById(id) {
     let result = await fetch(`/rest/products/${id}`);
     this.product = await result.json();
-    console.log(this.product);
-    //this.$store.state.products = result;
   }
 
   backToStartPage() {

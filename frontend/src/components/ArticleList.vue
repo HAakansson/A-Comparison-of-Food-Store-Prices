@@ -27,7 +27,6 @@ export default class ArticleList extends Vue {
 
   @Watch("$store.state.searchQueries", { deep: true, immediate: true })
   onSearchQueriesChanged(newVal) {
-    console.log("WATCHING");
     let query =
       newVal.searchString + newVal.categoryString + newVal.dietaryString;
 
