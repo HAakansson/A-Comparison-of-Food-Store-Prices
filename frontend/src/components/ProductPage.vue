@@ -1,20 +1,30 @@
 <template>
-<div class=products>
-<div class="grid-container">
-<div class="grid-item-1">
- <img class="productImage" :src="product.image_url">
-</div>
-<div class="grid-item-2">
-<h1 class="productName">{{product.name}}</h1>
-<p class="productBrand">{{product.display_volume}}{{product.unit_measurement}} {{product.brand}}</p>
-  <p class="description">{{product.description}}</p>
-  <p class="membership">{{requiresMembership}}</p>
-  <p class="discount-label">{{discountLabel}}</p>
-  <p class="price" :class="{discount: product.discount_price}">{{price}}:-</p>
-  <p class="comp-price">Jmf pris {{comparisonPrice}}:- /{{product.comparator}}</p>
-</div>
-</div>
-</div>
+  <div class="products">
+    <div class="grid-container">
+      <div class="grid-item-1">
+        <img class="productImage" :src="product.image_url" />
+      </div>
+      <div class="grid-item-2">
+        <h1 class="productName">{{ product.name }}</h1>
+        <p class="productBrand">
+          {{ product.display_volume }}{{ product.unit_measurement }}
+          {{ product.brand }}
+        </p>
+        <p class="description">{{ product.description }}</p>
+        <p class="membership">{{ requiresMembership }}</p>
+        <p class="discount-label">{{ discountLabel }}</p>
+        <p class="price" :class="{ discount: product.discount_price }">
+          {{ price }}:-
+        </p>
+        <p class="comp-price">
+          Jmf pris {{ comparisonPrice }}:- /{{ product.comparator }}
+        </p>
+      </div>
+    </div>
+    <button class="back-button" @click="backToStartPage">
+      Tillbaka
+    </button>
+  </div>
 </template>
 
 <script>
@@ -24,66 +34,70 @@ import { Vue, Component } from "vue-property-decorator";
 export default class ProductPage extends Vue {
   product = null;
 
-
-   async getProductById(id) {
-     let result = await fetch(`/rest/products/${id}`);
+  async getProductById(id) {
+    let result = await fetch(`/rest/products/${id}`);
     this.product = await result.json();
     console.log(this.product);
     //this.$store.state.products = result;
   }
-   created(){
-     console.log('in created');
-   this.getProductById(this.$route.params.productId);
+
+  backToStartPage() {
+    this.$router.push("/");
+  }
+
+  created() {
+    console.log("in created");
+    this.getProductById(this.$route.params.productId);
+  }
+
+  get price() {
+    this.product.unit_price = this.setDecimalNumber(this.product.unit_price);
+    this.product.discount_price = this.setDecimalNumber(
+      this.product.discount_price
+    );
+    return this.product.discount_price
+      ? this.product.discount_price
+      : this.product.unit_price;
+  }
+
+  get discountLabel() {
+    if (this.product.discount_quantity === null) {
+      return "";
     }
 
-    get price() {
-  this.product.unit_price = this.setDecimalNumber(this.product.unit_price);
-  this.product.discount_price = this.setDecimalNumber(this.product.discount_price);
+    if (this.product.discount_quantity > 99) {
+      return `Handla för minst ${this.product.discount_quantity}`;
+    } else {
+      return `${this.product.discount_quantity} för`;
+    }
+  }
 
-  if (this.product.discount_quantity !== null && this.product.discount_quantity < 99) {
-      return this.product.discount_price ? (this.product.discount_price * this.product.discount_quantity).toFixed(2) : this.product.unit_price;    
-  } else {
-      return this.product.discount_price ? this.product.discount_price : this.product.unit_price;
+  get comparisonPrice() {
+    this.product.discount_comparison_price = this.setDecimalNumber(
+      this.product.discount_comparison_price
+    );
+    this.product.comparison_price = this.setDecimalNumber(
+      this.product.comparison_price
+    );
+
+    return this.product.discount_comparison_price
+      ? this.product.discount_comparison_price
+      : this.product.comparison_price;
+  }
+
+  get requiresMembership() {
+    if (this.product.discount_requires_membership === 1) {
+      return "Kräver medlemskap";
+    } else {
+      return "";
+    }
+  }
+
+  setDecimalNumber(price) {
+    let regex = /\d{1,4}[.,]\d{1}$/;
+    return regex.test(price) ? price + "0" : price;
   }
 }
-
-get discountLabel() {
-
-  if (this.product.discount_quantity === null) { return ""; }
-
-
-  if (this.product.discount_quantity > 99)
-  {
-    return `Handla för minst ${this.product.discount_quantity}`;  
-  } else {
-    return `${this.product.discount_quantity} för`;
-  }
-}
-
-get comparisonPrice() {
-
-  this.product.discount_comparison_price = this.setDecimalNumber(this.product.discount_comparison_price);
-  this.product.comparison_price = this.setDecimalNumber(this.product.comparison_price);
-
-  return this.product.discount_comparison_price ? this.product.discount_comparison_price : this.product.comparison_price;
-}
-
-
-get requiresMembership() {
-
-  if (this.product.discount_requires_membership === 1) { return "Kräver medlemskap"; }
-  else { return ""; }
-
-}
-
-setDecimalNumber(price) {
-  
-  
-  let regex = /\d{1,4}[.,]\d{1}$/;
-  return regex.test(price) ? price + "0" : price;
-}
-}
-
 </script>
 
 <style scoped lang="scss">
@@ -91,7 +105,7 @@ setDecimalNumber(price) {
   background-color: white;
   margin: 10px;
   padding-top: 15px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   text-align: center;
   width: 50vw;
@@ -121,7 +135,6 @@ setDecimalNumber(price) {
 .grid-container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-
 }
 
 .productName {
@@ -154,5 +167,4 @@ setDecimalNumber(price) {
 .membership {
   font-style: italic;
 }
-
 </style>
