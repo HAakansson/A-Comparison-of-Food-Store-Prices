@@ -43,11 +43,12 @@ const getProductSuggestions = async (req, res) => {
   }
 
   let results = await db.all(
-    /*sql*/ `SELECT id, name, unit_measurement, brand, (CAST(LENGTH($searchString) AS FLOAT) / LENGTH(name)) as matchedSearchString
+    /*sql*/ `SELECT id, name, unit_measurement, brand, store, (CAST(LENGTH($searchString) AS FLOAT) / LENGTH(name)) as matchedSearchString
     FROM Product 
     WHERE brand LIKE $searchString
     OR name LIKE $searchString 
-    ORDER BY matchedSearchString DESC`,
+    ORDER BY matchedSearchString DESC
+    LIMIT 100`,
     {
       $searchString: value,
     }
@@ -71,7 +72,9 @@ const getProductSuggestions = async (req, res) => {
 
 const getBrandSuggestions = async (req, res) => {
   let brand = req.query.b;
-  let brandString = `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%`;
+  let brandString = req.query.b
+    ? `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%`
+    : "";
 
   let results = await db.all(
     /*sql*/ `SELECT brand, CAST(LENGTH("${brand}") AS FLOAT) / LENGTH (brand) AS matchedSearchString
@@ -81,32 +84,115 @@ const getBrandSuggestions = async (req, res) => {
   );
 
   results = removeDoubletBrands(results);
-  results = results.map(r => r.brand)
+  results = results.map((r) => r.brand);
   res.json(results);
 };
 
 const getProductsById = async (req, res) => {
-  let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`)
+  let result = await db.all(
+    /*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`
+  );
 
   res.json(result);
-}
+};
 
 const getCategories = async (req, res) => {
   let results = await db.all(/*sql*/ `SELECT DISTINCT name, 
     CAST(LENGTH("${req.query.search}") AS FLOAT)/LENGTH(name) as match_percentage,
-    CASE WHEN name LIKE "${req.query.search}%"
-    THEN true ELSE false END firstphrase
     FROM Category WHERE name LIKE "%${req.query.search}%"
-    ORDER BY firstphrase DESC, match_percentage DESC`);
+    ORDER BY match_percentage DESC`);
 
   res.json(results);
 };
 
+const postCreateShoppingList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `INSERT INTO ShoppingLists (name, creator, timestamp) VALUES ($name, $creator, $timestamp)`,
+    {
+      $name: req.body.name,
+      $creator: req.body.creator || null,
+      $timestamp: new Date().getTime(),
+    }
+  );
+
+  let id = result.lastID;
+  res.json(id);
+};
+
+const getAllShoppingLists = async (req, res) => {
+  let result = await db.all(/*sql*/ `SELECT * FROM ShoppingLists`);
+  res.json(result);
+};
+
+const getSingleShoppingList = async (req, res) => {
+  let result = await db.all(
+    /*sql*/ `SELECT * FROM ShoppingListItems WHERE shoppingListId = $id`,
+    {
+      $id: req.params.shoppingListId,
+    }
+  );
+  res.json(result);
+};
+
+const postRowToList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `INSERT INTO ShoppingListItems (product, brand, amount, unit, shoppingListId, productId) VALUES ($product, $brand, $amount, $unit, $shoppingListId, $productId)`,
+    {
+      $product: req.body.product,
+      $brand: req.body.brand,
+      $amount: req.body.amount,
+      $unit: req.body.unit,
+      $shoppingListId: req.params.shoppingListId,
+      $productId: req.body.productId,
+    }
+  );
+  res.json(result.lastID);
+};
+
+const getNewRowFromShoppingList = async (req, res) => {
+  let result = await db.get(
+    /*sql*/ `SELECT * FROM ShoppingListItems WHERE id = $id`,
+    {
+      $id: req.params.rowId,
+    }
+  );
+  res.json(result);
+};
+
+const deleteRowFromList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `
+    DELETE FROM ShoppingListItems WHERE id = $id
+  `,
+    {
+      $id: req.params.rowId,
+    }
+  );
+  res.json(result.changes);
+};
+
+const deleteShoppingList = async (req, res) => {
+  let result = await db.run(
+    /*sql*/ `DELETE FROM ShoppingLists WHERE id = $id`,
+    {
+      $id: req.params.shoppingListId,
+    }
+  );
+  res.json(result.changes);
+};
+
 module.exports = {
+  postCreateShoppingList,
+  postShoppingList,
+  postRowToList,
   getCategories,
   getProductSuggestions,
   getDietaryRestrictions,
-  postShoppingList,
   getBrandSuggestions,
-  getProductsById
+  getProductsById,
+  getAllShoppingLists,
+  getSingleShoppingList,
+  getNewRowFromShoppingList,
+  deleteRowFromList,
+  deleteShoppingList,
 };
