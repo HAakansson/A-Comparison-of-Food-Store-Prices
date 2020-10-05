@@ -3,6 +3,7 @@ const path = require("path");
 const restRoutes = require("./routes/restRoutes");
 const apiRoutes = require("./routes/apiRoutes");
 const port = 3000;
+const ScrubbingSchedule = require('./ScrubbingSchedule')
 
 const app = express();
 const server = app.listen(port, (err) => {
@@ -14,6 +15,7 @@ const server = app.listen(port, (err) => {
 });
 app.use(express.json()); // Lets us acces the req.body object.
 
+ScrubbingSchedule.go();
 app.use("/rest", restRoutes);
 app.use("/api", apiRoutes);
 

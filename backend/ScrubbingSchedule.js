@@ -9,7 +9,7 @@ module.exports = class ScrubbingSchedule{
   }
  static async startHarvesting(){
    this.writeToFile(new Date());
-    Harvesting.go();
+    await Harvesting.go();
     this.startTimer();
 
   }
@@ -24,8 +24,6 @@ module.exports = class ScrubbingSchedule{
     }
    lastScan = new Date(JSON.parse(lastScan));
    let date = new Date();
-   console.log(lastScan.getTime() + 86400000 < date.getTime());
-
 
 if(date.getHours() === 3 && lastScan.getDate() !== date.getDate()){
 this.startHarvesting();
