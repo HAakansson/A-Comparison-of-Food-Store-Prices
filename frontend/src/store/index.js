@@ -5,6 +5,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    shoppingLists: [],
     searchQueries:
     {
       searchString: "?s=",
@@ -12,11 +13,20 @@ export default new Vuex.Store({
       dietaryString: "&d="
     },
     products: null,
+
   },
   mutations: {
+    addToShoppingLists(state, data) {
+      state.shoppingLists.unshift(data);
+    },
+    updateShoppingLists(state, data) {
+      state.shoppingLists = data;
+    },
     updateDietaryString(state, data) {
       state.searchQueries.dietaryString += data;
-    //   state.searchQueries.dietaryString += ",";
+    },
+    replaceDietaryString(state, data){
+      state.searchQueries.dietaryString = data;
     }
   },
   actions: {
