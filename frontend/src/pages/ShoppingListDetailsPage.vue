@@ -82,9 +82,15 @@ export default class ShoppingListDetailsPage extends Vue {
     this.$router.push("/shoppinglists");
   }
 
-  sumbitShoppingList() {
+  async sumbitShoppingList() {
     console.log("List submitted");
     console.log(this.shoppingList);
+
+    // let results = await fetch("/rest/shoppinglists", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(this.shoppingList),
+    // });
   }
 
   async created() {
