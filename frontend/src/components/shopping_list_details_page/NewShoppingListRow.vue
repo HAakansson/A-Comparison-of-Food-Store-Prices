@@ -12,7 +12,7 @@
       list="products"
       placeholder="Skriv in produkt..."
       v-model="product"
-      @blur="getProductUnitMeasurement"
+      @blur="getProductIdAndUnitMeasurement"
     />
     <input
       class="amount-input"
@@ -24,8 +24,13 @@
       <span v-if="unit">{{ unit }}</span>
     </div>
     <div class="buttons">
-      <button class="clear-inputs" @click.prevent="resetInputs"><span>Rensa</span><i class="material-icons">clear</i></button>
-      <button class="save" @click.prevent="save"><span>Spara ny rad</span><i class="material-icons">add_circle_outline</i></button>
+      <button class="clear-inputs" @click.prevent="resetInputs">
+        <span>Rensa</span><i class="material-icons">clear</i>
+      </button>
+      <button class="save" @click.prevent="save">
+        <span>Spara ny rad</span
+        ><i class="material-icons">add_circle_outline</i>
+      </button>
     </div>
     <p v-if="feedback" class="feedback">{{ feedback }}</p>
 
@@ -50,6 +55,7 @@ export default class NewShoppingListRow extends Vue {
   amount = null;
   unit = null;
   feedback = null;
+  productId = null;
 
   @Watch("brand")
   async onBrandChange(value) {
@@ -63,13 +69,13 @@ export default class NewShoppingListRow extends Vue {
     this.products = productResults;
   }
 
-  getProductUnitMeasurement(event) {
+  getProductIdAndUnitMeasurement(event) {
     if (this.products) {
       let product = this.products.find((p) => {
         return p.name === event.target.value;
       });
-      console.log(product);
       this.unit = product.unit_measurement;
+      this.productId = product.id;
     } else {
       this.unit = null;
     }
@@ -106,6 +112,7 @@ export default class NewShoppingListRow extends Vue {
       product: this.product,
       amount: this.amount,
       unit: this.unit,
+      productId: this.productId,
     };
     if (!rowInfo.product) {
       this.feedback = "You must enter a product...";
@@ -140,7 +147,8 @@ export default class NewShoppingListRow extends Vue {
 .new-shopping-list-row-form {
   align-items: center;
   display: grid;
-  grid-template-columns: 20% 20% 10% 5% 1fr;
+  grid-template-columns: 20% 20% 10% 5% 20%;
+  justify-content: center;
   margin: 0 0 1em 0;
   input {
     padding: 0.5em;
@@ -161,11 +169,12 @@ export default class NewShoppingListRow extends Vue {
   .buttons {
     grid-column: 5/6;
     display: flex;
+    justify-content: flex-end;
     margin: 0 1em;
     .clear-inputs,
     .save {
       display: none;
-      margin: 0 1em 0 0;
+      margin-left: 10px;
     }
   }
   &:focus-within {
@@ -181,6 +190,12 @@ export default class NewShoppingListRow extends Vue {
     .save {
       background: green;
     }
+  }
+
+  .feedback {
+    color: red;
+    font-size: 1.5em;
+    font-weight: bold;
   }
 }
 </style>

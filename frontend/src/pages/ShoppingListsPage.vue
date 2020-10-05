@@ -5,20 +5,23 @@
         <span>Skapa en shoppinglista</span> <i class="material-icons">create</i>
       </button>
     </div>
-    <h2 class="header">Dina Shoppinglistor</h2>
+    <h1 class="header">Dina Shoppinglistor</h1>
 
     <div class="shopping-lists-container">
       <p v-if="!shoppingLists">
         You currently have no shopping lists.
       </p>
       <ShoppingList
-        class="shopping-list"
+        v-else
         v-for="shoppingList in shoppingLists"
         :key="shoppingList.id"
         :shoppingList="shoppingList"
         @remove-shoppingList="removeShoppingList"
       />
     </div>
+    <button v-if="showBackButton" class="back-button" @click="backToStartPage">
+      Tillbaks till startsidan
+    </button>
   </div>
 </template>
 
@@ -33,6 +36,10 @@ import ShoppingList from "../components/shopping_list_page/ShoppingList";
 })
 export default class ShoppingListPage extends Vue {
   shoppingLists = null;
+
+  get showBackButton() {
+    return this.$route.name === "ShoppingListsPage";
+  }
 
   goToCreateShoppingList() {
     this.$router.push("/shoppinglists-create");
@@ -61,6 +68,10 @@ export default class ShoppingListPage extends Vue {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
     });
+  }
+
+  backToStartPage() {
+    this.$router.push("/");
   }
 
   async created() {
@@ -92,12 +103,10 @@ export default class ShoppingListPage extends Vue {
   }
 
   .shopping-lists-container {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 2em 0;
-    .shopping-list {
-      cursor: pointer;
-    }
+    display: grid;
+    grid-template-columns: repeat(5, 210px);
+    justify-content: space-between;
+    row-gap: 20px;
   }
 }
 </style>

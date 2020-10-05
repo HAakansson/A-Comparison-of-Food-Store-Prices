@@ -2,20 +2,18 @@
   <div id="shopping-list">
     <div class="card">
       <div class="container" @click="goToShoppingListDetails">
-        <p class="shopping-list-name">{{ shoppingList.name }}</p>
-        <p class="shopping-list-creator">
+        <div class="shopping-list-name">{{ shoppingList.name }}</div>
+        <div class="shopping-list-creator">
           Skapat av:
           {{ shoppingList.creator ? shoppingList.creator : "Okänd skapare" }}
-        </p>
-        <p class="shopping-list-timestamp">
+        </div>
+        <div class="shopping-list-timestamp">
           {{ new Date(shoppingList.timestamp).toLocaleString() }}
-        </p>
+        </div>
       </div>
-      <div class="shopping-list-footer">
-        <button class="remove-button" @click="removeShoppingList">
-          <i class="material-icons">delete</i>
-        </button>
-      </div>
+      <button class="remove-button" @click="removeShoppingList">
+        <i class="material-icons">delete</i>
+      </button>
     </div>
   </div>
 </template>
@@ -40,29 +38,31 @@ export default class ShoppingList extends Vue {
 
 <style lang="scss" scoped>
 #shopping-list {
-  margin: 0 2em;
-  position: relative;
   .card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    height: 200px;
     padding: 1em;
+    position: relative;
     text-align: center;
-    transition: 0.3s;
+    transition: 0.5s;
+    width: 100%;
+
     .container {
-      padding: 2px 16px;
+      display: flex;
+      flex-direction: column;
+      height: 80%;
+      justify-content: space-around;
+
       .shopping-list-name {
-        font-size: 1.5em;
+        font-size: 1.3em;
         font-weight: bolder;
         text-decoration: underline;
-        margin: 0 0 0.2em 0;
       }
+
       .shopping-list-creator {
         font-weight: bold;
-        margin: 0 0 1em 0;
       }
-    }
-    .shopping-list-footer {
-      display: flex;
-      justify-content: flex-end;
     }
   }
 
@@ -73,6 +73,12 @@ export default class ShoppingList extends Vue {
   .remove-button {
     background: red;
     color: white;
+    right: 10px;
+    bottom: 10px;
+    position: absolute;
+    &:hover {
+      box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    }
   }
 }
 </style>

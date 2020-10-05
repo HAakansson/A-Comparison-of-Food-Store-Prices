@@ -1,8 +1,12 @@
 <template>
   <div class="shopping-list-row">
-    <div class="column brand">{{ shoppingListRow.brand ? shoppingListRow.brand : "-" }}</div>
+    <div class="column brand">
+      {{ shoppingListRow.brand ? shoppingListRow.brand : "-" }}
+    </div>
     <div class="column product">{{ shoppingListRow.product }}</div>
-    <div class="column amount">{{ shoppingListRow.amount ? shoppingListRow.amount : "-"  }}</div>
+    <div class="column amount">
+      {{ shoppingListRow.amount ? shoppingListRow.amount : "-" }}
+    </div>
     <div class="column unit">{{ shoppingListRow.unit }}</div>
     <div class="buttons">
       <button class="remove-button" @click="removeRow">
@@ -44,6 +48,8 @@ export default class ShoppingListRow extends Vue {
       headers: { "Content-Type": "application/json" },
     });
   }
+
+  created() {}
 }
 </script>
 
@@ -51,7 +57,8 @@ export default class ShoppingListRow extends Vue {
 .shopping-list-row {
   align-items: center;
   display: grid;
-  grid-template-columns: 20% 20% 10% 5% 1fr;
+  grid-template-columns: 20% 20% 10% 5% 20%;
+  justify-content: center;
   margin: 0 0 1em 0;
   .column {
     border: 1px solid black;
@@ -61,6 +68,8 @@ export default class ShoppingListRow extends Vue {
   }
   .buttons {
     display: flex;
+    justify-content: flex-end;
+
     margin: 0 1em;
     .remove-button {
       align-items: center;

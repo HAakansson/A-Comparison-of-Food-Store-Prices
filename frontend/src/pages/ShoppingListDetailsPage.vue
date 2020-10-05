@@ -2,14 +2,12 @@
   <div id="shopping-list-details">
     <div v-if="shoppingList" class="shopping-list-container">
       <ShoppingListRow
-        class="row"
         v-for="row in shoppingList"
         :key="row.id"
         :shoppingListRow="row"
         @row-deleted="deleteRowFromShoppingList"
       />
       <NewShoppingListRow
-        class="row"
         :shoppingListId="shoppingListId"
         @new-row-added="updateShoppingList"
       />
@@ -24,6 +22,16 @@
         @new-row-added="updateShoppingList"
       />
     </div>
+    <button
+      v-if="showBackButton"
+      class="back-button"
+      @click="backToShoppingLists"
+    >
+      Tillbaka till dina shoppinglistor
+    </button>
+    <button class="sumbit-list-button" @click="sumbitShoppingList">
+      Räkna ut din Shoppinglista
+    </button>
   </div>
 </template>
 
@@ -43,6 +51,10 @@ export default class ShoppingListDetailsPage extends Vue {
   brand = "";
   product = "";
   amount = "";
+
+  get showBackButton() {
+    return this.$route.name === "ShoppingListDetailsPage";
+  }
 
   get shoppingListId() {
     return this.$route.params.shoppingListId;
@@ -66,6 +78,15 @@ export default class ShoppingListDetailsPage extends Vue {
     return results;
   }
 
+  backToShoppingLists() {
+    this.$router.push("/shoppinglists");
+  }
+
+  sumbitShoppingList() {
+    console.log("List submitted");
+    console.log(this.shoppingList);
+  }
+
   async created() {
     let results = await this.getSingleShoppingList(this.shoppingListId);
     if (results.length !== 0) {
@@ -78,8 +99,14 @@ export default class ShoppingListDetailsPage extends Vue {
 <style lang="scss" scoped>
 #shopping-list-details {
   margin: 2em 2em;
-  .shopping-list-container {
 
+  .sumbit-list-button {
+    background: green;
+    bottom: 70px;
+    color: white;
+    font-size: 1.5em;
+    position: absolute;
+    right: 10px;
   }
 }
 </style>

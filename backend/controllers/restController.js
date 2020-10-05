@@ -72,7 +72,9 @@ const getProductSuggestions = async (req, res) => {
 
 const getBrandSuggestions = async (req, res) => {
   let brand = req.query.b;
-  let brandString = req.query.b ? `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%` : "";
+  let brandString = req.query.b
+    ? `${req.query.b[0].toUpperCase() + req.query.b.slice(1)}%`
+    : "";
 
   let results = await db.all(
     /*sql*/ `SELECT brand, CAST(LENGTH("${brand}") AS FLOAT) / LENGTH (brand) AS matchedSearchString
@@ -126,13 +128,14 @@ const getSingleShoppingList = async (req, res) => {
 
 const postRowToList = async (req, res) => {
   let result = await db.run(
-    /*sql*/ `INSERT INTO ShoppingListItems (product, brand, amount, unit, shoppingListId) VALUES ($product, $brand, $amount, $unit, $shoppingListId)`,
+    /*sql*/ `INSERT INTO ShoppingListItems (product, brand, amount, unit, shoppingListId, productId) VALUES ($product, $brand, $amount, $unit, $shoppingListId, $productId)`,
     {
       $product: req.body.product,
       $brand: req.body.brand,
       $amount: req.body.amount,
       $unit: req.body.unit,
       $shoppingListId: req.params.shoppingListId,
+      $productId: req.body.productId,
     }
   );
   res.json(result.lastID);
