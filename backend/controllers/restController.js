@@ -172,13 +172,26 @@ const deleteRowFromList = async (req, res) => {
 };
 
 const deleteShoppingList = async (req, res) => {
-  let result = await db.run(
+  let results1 = await db.run(
     /*sql*/ `DELETE FROM ShoppingLists WHERE id = $id`,
     {
       $id: req.params.shoppingListId,
     }
   );
-  res.json(result.changes);
+
+  let results2 = await db.run(
+    /*sql*/ `DELETE FROM ShoppingListItems WHERE shoppingListId = $shoppingListId`,
+    {
+      $shoppingListId: req.params.shoppingListId,
+    }
+  );
+
+  let results = {
+    result1: results1.changes,
+    result2: results2.changes,
+  };
+
+  res.json(results);
 };
 
 module.exports = {
