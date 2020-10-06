@@ -80,9 +80,11 @@ export default class HeaderComponent extends Vue {
     this.$router.push("/shoppinglists");
   }
 
-  created() {}
-  mounted() {}
-  beforeDestroy() {}
+  mounted() {
+    if (this.$route.name === "HomePage") {
+      document.querySelector(".grid-item-1 .search-field input").focus();
+    }
+  }
 }
 </script>
 

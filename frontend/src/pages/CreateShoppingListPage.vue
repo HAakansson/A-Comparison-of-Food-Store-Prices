@@ -24,7 +24,9 @@
         />
       </div>
       <div class="form-buttons">
-        <button class="back" @click.prevent="backToShoppingListsPage">Tillbaka</button>
+        <button class="back" @click.prevent="backToShoppingListsPage">
+          Tillbaka
+        </button>
         <button class="reset" @click.prevent="resetForm">Rensa</button>
         <button class="save" @click.prevent="saveList">Spara</button>
         <p v-if="feedback">{{ feedback }}</p>

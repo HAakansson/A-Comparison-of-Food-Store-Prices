@@ -32,7 +32,7 @@ export default class SingleStoreProduct extends Vue {
     margin-right: 2em;
   }
 
-  .product-info-container{
+  .product-info-container {
     display: flex;
     flex-direction: column;
 

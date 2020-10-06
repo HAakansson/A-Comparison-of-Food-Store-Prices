@@ -14,7 +14,9 @@
         :storeProducts="storeData.products"
       />
     </div>
-    <button class="back-button" @click="goBackToShoppingListId">Tillbaks till shoppinglistan</button>
+    <button class="back-button" @click="goBackToShoppingListId">
+      Tillbaks till shoppinglistan
+    </button>
   </div>
 </template>
 
@@ -41,9 +43,11 @@ export default class StoreComparisonPage extends Vue {
     btn.style.bottom = `${placement}px`;
   }
 
-  goBackToShoppingListId(){
-    let lastRouteShoppingId = JSON.parse(localStorage.getItem("lastRouteParams"));
-    this.$router.push(`/shoppinglists/${lastRouteShoppingId}`)
+  goBackToShoppingListId() {
+    let lastRouteShoppingId = JSON.parse(
+      localStorage.getItem("lastRouteParams")
+    );
+    this.$router.push(`/shoppinglists/${lastRouteShoppingId}`);
   }
 
   mounted() {

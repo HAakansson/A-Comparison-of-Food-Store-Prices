@@ -17,7 +17,7 @@ import ArticleList from "../components/ArticleList";
   },
 })
 export default class HomePage extends Vue {
-  changeH1Text(){
+  changeH1Text() {
     document.querySelector(".home-page h1").innerText = "Produkter";
   }
 }

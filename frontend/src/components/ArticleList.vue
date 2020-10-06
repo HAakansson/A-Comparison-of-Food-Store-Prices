@@ -19,6 +19,7 @@ import ArticleListItem from "./ArticleListItem";
 })
 export default class ArticleList extends Vue {
   articles = null;
+  showSpinner = false;
 
   @Watch("articles")
   onArticleListChange() {

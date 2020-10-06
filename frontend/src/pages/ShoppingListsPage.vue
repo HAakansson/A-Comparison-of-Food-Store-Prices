@@ -71,6 +71,7 @@ export default class ShoppingListPage extends Vue {
   }
 
   backToStartPage() {
+    document.querySelector(".grid-item-1 .search-field input").focus();
     this.$router.push("/");
   }
 

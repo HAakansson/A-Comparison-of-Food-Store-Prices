@@ -91,6 +91,9 @@ export default class ShoppingListDetailsPage extends Vue {
     //   body: JSON.stringify(this.shoppingList),
     // });
   }
+  mounted() {
+    document.querySelector(".product-input").focus();
+  }
 
   async created() {
     let results = await this.getSingleShoppingList(this.shoppingListId);
