@@ -40,6 +40,12 @@ const routes = [
     path: "/store-comparison-page",
     name: "StoreComparisonPage",
     component: StoreComparisonPage,
+    beforeEnter: (to, from, next) => {
+      if (from.params.shoppingListId) {
+        localStorage.setItem("lastRouteParams", JSON.stringify(from.params.shoppingListId));
+      }
+      next();
+    },
   },
 ];
 

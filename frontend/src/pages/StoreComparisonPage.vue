@@ -11,9 +11,10 @@
       <StoreProducts
         v-for="(storeData, i) in storeComparisonArray"
         :key="i"
-        :storeData="storeData"
+        :storeProducts="storeData.products"
       />
     </div>
+    <button class="back-button" @click="goBackToShoppingListId">Tillbaks till shoppinglistan</button>
   </div>
 </template>
 
@@ -32,6 +33,26 @@ export default class StoreComparisonPage extends Vue {
   get storeComparisonArray() {
     return this.$store.state.storeComparisonArray;
   }
+
+  handleScroll() {
+    // console.log("x: ", window.pageXOffset, "y: ", window.pageYOffset);
+    let btn = document.querySelector(".store-comparison-page .back-button");
+    let placement = 10 - window.pageYOffset;
+    btn.style.bottom = `${placement}px`;
+  }
+
+  goBackToShoppingListId(){
+    let lastRouteShoppingId = JSON.parse(localStorage.getItem("lastRouteParams"));
+    this.$router.push(`/shoppinglists/${lastRouteShoppingId}`)
+  }
+
+  mounted() {
+    window.addEventListener("scroll", this.handleScroll);
+  }
+
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.handleScroll);
+  }
 }
 </script>
 
@@ -44,6 +65,12 @@ export default class StoreComparisonPage extends Vue {
     grid-gap: 10px;
     grid-template-columns: repeat(3, 30%);
     justify-content: center;
+  }
+  .back-button {
+    &:hover {
+      background: rgba(0, 0, 0, 0.8);
+      opacity: 1 !important;
+    }
   }
 }
 </style>
