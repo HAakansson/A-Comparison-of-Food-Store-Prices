@@ -7,7 +7,10 @@
     </div>
     <h1 class="header">Dina Shoppinglistor</h1>
 
-    <div class="shopping-lists-container">
+    <div v-if="showSpinner" class="spinner">
+      <Spinner />
+    </div>
+    <div v-else class="shopping-lists-container">
       <p v-if="!shoppingLists">
         You currently have no shopping lists.
       </p>
@@ -28,14 +31,17 @@
 <script>
 import { Vue, Component } from "vue-property-decorator";
 import ShoppingList from "../components/shopping_list_page/ShoppingList";
+import Spinner from "../components/Spinner";
 
 @Component({
   components: {
     ShoppingList,
+    Spinner,
   },
 })
 export default class ShoppingListPage extends Vue {
   shoppingLists = null;
+  showSpinner = false;
 
   get showBackButton() {
     return this.$route.name === "ShoppingListsPage";
@@ -58,8 +64,10 @@ export default class ShoppingListPage extends Vue {
   }
 
   async getShoppingLists() {
+    this.showSpinner = true;
     let results = await fetch("/rest/shoppingLists");
     results = await results.json();
+    this.showSpinner = false;
     return results;
   }
 
@@ -85,6 +93,10 @@ export default class ShoppingListPage extends Vue {
 #shopping-lists-page {
   margin: 1em 4em;
   .header {
+    text-align: center;
+  }
+
+  .spinner {
     text-align: center;
   }
 

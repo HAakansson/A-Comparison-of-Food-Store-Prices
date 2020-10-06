@@ -1,6 +1,9 @@
 <template>
   <div id="shopping-list-details">
-    <div v-if="shoppingList" class="shopping-list-container">
+    <div v-if="showSpinner" class="spinner">
+      <Spinner />
+    </div>
+    <div v-else-if="shoppingList" class="shopping-list-container">
       <ShoppingListRow
         v-for="row in shoppingList"
         :key="row.id"
@@ -39,11 +42,13 @@
 import { Vue, Component } from "vue-property-decorator";
 import ShoppingListRow from "../components/shopping_list_details_page/ShoppingListRow";
 import NewShoppingListRow from "../components/shopping_list_details_page/NewShoppingListRow";
+import Spinner from "../components/Spinner";
 
 @Component({
   components: {
     ShoppingListRow,
     NewShoppingListRow,
+    Spinner
   },
 })
 export default class ShoppingListDetailsPage extends Vue {
@@ -51,6 +56,7 @@ export default class ShoppingListDetailsPage extends Vue {
   brand = "";
   product = "";
   amount = "";
+  showSpinner = false;
 
   get showBackButton() {
     return this.$route.name === "ShoppingListDetailsPage";
@@ -73,8 +79,10 @@ export default class ShoppingListDetailsPage extends Vue {
   }
 
   async getSingleShoppingList(shoppingListId) {
+    this.showSpinner = true;
     let results = await fetch(`/rest/shoppingLists/${shoppingListId}`);
     results = await results.json();
+    this.showSpinner = false;
     return results;
   }
 
@@ -107,6 +115,10 @@ export default class ShoppingListDetailsPage extends Vue {
 <style lang="scss" scoped>
 #shopping-list-details {
   margin: 2em 2em;
+
+  .spinner{
+    text-align: center;
+  }
 
   .sumbit-list-button {
     background: green;

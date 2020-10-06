@@ -1,20 +1,27 @@
 <template>
-  <div class="article-list">
-    <ArticleListItem
-      v-for="article in articles"
-      :key="article.id"
-      :article="article"
-    />
+  <div class="article-list-container">
+    <div class="article-list" v-if="!showSpinner">
+      <ArticleListItem
+        v-for="article in articles"
+        :key="article.id"
+        :article="article"
+      />
+    </div>
+    <div class="spinner" v-if="showSpinner">
+      <Spinner />
+    </div>
   </div>
 </template>
 
 <script>
 import { Vue, Component, Watch } from "vue-property-decorator";
 import ArticleListItem from "./ArticleListItem";
+import Spinner from "./Spinner";
 
 @Component({
   components: {
     ArticleListItem,
+    Spinner,
   },
 })
 export default class ArticleList extends Vue {
@@ -40,16 +47,20 @@ export default class ArticleList extends Vue {
   async searchForProduct(query) {
     let result = await fetch(`/api/products${query}`);
     this.articles = await result.json();
-
-    //this.$store.state.products = result;
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.article-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.article-list-container {
+  .article-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .spinner {
+    text-align: center;
+  }
 }
 </style>
