@@ -139,7 +139,11 @@ export default class NewShoppingListRow extends Vue {
     return resultId;
   }
 
-  created() {}
+  mounted() {
+    document
+      .querySelector(".new-shopping-list-row-form .product-input")
+      .focus();
+  }
 }
 </script>
 

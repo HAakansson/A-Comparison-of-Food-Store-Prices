@@ -13,90 +13,7 @@ export default new Vuex.Store({
     },
     products: null,
 
-    storeComparisonArray: [
-      {
-        name: "Willys",
-        sum: 5000,
-        products: [
-          {
-            name: "Mjölk",
-            brand: "Arla",
-            unit_price: 11,
-            image:
-              "//static.mathem.se/shared/images/products/small/fruktkasse-bas-4kg-klass1.jpg",
-            id: 123,
-          },
-          {
-            name: "Choklad",
-            brand: "Marabou",
-            unit_price: 19,
-            image:
-              "//static.mathem.se/shared/images/products/small/yoghurt-latt-mild-naturell-0-5--1500g-arla-ko.jpg",
-            id: 123,
-          },
-          {
-            name: "Choklad",
-            brand: "Marabou",
-            unit_price: 19,
-            image:
-              "//static.mathem.se/shared/images/products/small/yoghurt-latt-mild-naturell-0-5--1500g-arla-ko.jpg",
-            id: 123,
-          },
-          {
-            name: "Choklad",
-            brand: "Marabou",
-            unit_price: 19,
-            image:
-              "//static.mathem.se/shared/images/products/small/yoghurt-latt-mild-naturell-0-5--1500g-arla-ko.jpg",
-            id: 123,
-          },
-        ],
-      },
-      {
-        name: "Hemköp",
-        sum: 4600,
-        products: [
-          {
-            name: "Mjölk",
-            brand: "Arla",
-            unit_price: 10,
-            image:
-              "//static.mathem.se/shared/images/products/small/fruktkasse-bas-4kg-klass1.jpg",
-            id: 123,
-          },
-          {
-            name: "Mjölk",
-            brand: "Arla",
-            unit_price: 10,
-            image:
-              "//static.mathem.se/shared/images/products/small/fruktkasse-bas-4kg-klass1.jpg",
-            id: 123,
-          },
-          {
-            name: "Mjölk",
-            brand: "Arla",
-            unit_price: 10,
-            image:
-              "//static.mathem.se/shared/images/products/small/fruktkasse-bas-4kg-klass1.jpg",
-            id: 123,
-          },
-        ],
-      },
-      {
-        name: "Mathem",
-        sum: 4800,
-        products: [
-          {
-            name: "Mjölk",
-            brand: "Arla",
-            unit_price: 12,
-            image:
-              "//static.mathem.se/shared/images/products/small/fruktkasse-bas-4kg-klass1.jpg",
-            id: 123,
-          },
-        ],
-      },
-    ],
+    storeComparisonArray: [],
   },
   mutations: {
     addToShoppingLists(state, data) {
@@ -110,6 +27,9 @@ export default new Vuex.Store({
     },
     replaceDietaryString(state, data) {
       state.searchQueries.dietaryString = data;
+    },
+    setStoreComparisonArray(state, data){
+      state.storeComparisonArray = data;
     },
   },
   actions: {},

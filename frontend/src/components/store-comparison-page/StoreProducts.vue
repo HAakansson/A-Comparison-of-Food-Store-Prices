@@ -20,6 +20,10 @@ import SingleStoreProduct from "./SingleStoreProduct";
 export default class StoreProducts extends Vue {
   @Prop()
   storeProducts;
+
+  created(){
+    console.log(this.storeProducts);
+  }
 }
 </script>
 

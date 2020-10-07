@@ -1,7 +1,7 @@
 <template>
   <div class="single-product">
     <div class="image-container">
-      <img :src="product.image" />
+      <img :src="product.thumbnail_url" />
     </div>
     <div class="product-info-container">
       <span class="product-text">Namn: {{ product.name }}</span>
