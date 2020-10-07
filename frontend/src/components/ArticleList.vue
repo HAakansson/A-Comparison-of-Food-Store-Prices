@@ -30,13 +30,17 @@ export default class ArticleList extends Vue {
     let query =
       newVal.searchString + newVal.categoryString + newVal.dietaryString;
 
+    if (query === "?s=&c=&d=") { return; }
+    if (newVal.searchString === "?s=") { newVal.searchString = "?s= "; }
+
     clearTimeout(this.timer);
-    this.timer = setTimeout(() => {
-      this.searchForProduct(query);
+    this.timer = setTimeout( async () => {
+      await this.searchForProduct(query);
     }, 1000);
   }
 
   async searchForProduct(query) {
+
     let result = await fetch(`/api/products${query}`);
     this.articles = await result.json();
 
