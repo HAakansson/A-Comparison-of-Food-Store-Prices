@@ -25,6 +25,12 @@ export default new Vuex.Store({
     updateDietaryString(state, data) {
       state.searchQueries.dietaryString += data;
     },
+    updateCategoryString(state, data) {
+      state.searchQueries.categoryString += data;
+    },
+    resetCategoryString(state) {
+      state.searchQueries.categoryString = "&c=";
+    },
     replaceDietaryString(state, data){
       state.searchQueries.dietaryString = data;
     }
