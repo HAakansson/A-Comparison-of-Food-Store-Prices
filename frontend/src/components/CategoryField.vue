@@ -23,25 +23,16 @@ categories = null;
 @Watch("categorySearch")
   async onCategoryChange(value) {
 
-
     if (value.length < 2) { return; }
 
-    this.getCategories(value);
-    //console.log("Results: ", categoryResults);
-    //this.categories = categoryResults;
-
-      console.log("BEFORE TIMEOUT");
-
-  //  clearTimeout(this.timer);
-  //  this.timer = setTimeout(() => {
-  //        console.log("INSIDE TIMEOUT");
-      this.$store.commit("resetCategoryString");
-      this.$store.commit("updateCategoryString", value);
-            console.log(this.$store.state.searchQueries.categoryString);
-
-      //console.log("VALUIE", value);
-  //  }, 500);
-  //  console.log("AFTER TIMEOUT");
+ clearTimeout(this.timer);
+    this.timer = setTimeout( async () => {
+    
+    await this.getCategories(value);
+  
+    this.$store.commit("resetCategoryString");
+    this.$store.commit("updateCategoryString", value);
+  }, 1200);
    
   }
 
@@ -49,9 +40,6 @@ categories = null;
   async getCategories(categoryString) {
     let categoryResults = await fetch(`/rest/categories?c=${categoryString}`);
     this.categories = await categoryResults.json();
-    //console.log(categoryResults);
-
-    //return categoryResults;
   }
 
 
