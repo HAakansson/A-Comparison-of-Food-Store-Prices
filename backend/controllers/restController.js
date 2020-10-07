@@ -18,8 +18,9 @@ const getDietaryRestrictions = async (req, res) => {
 };
 
 const postShoppingList = async (req, res) => {
-  //var jsonList = JSON.stringify(req.body);
-  CalculateShoppingList.calculateTotalCost(req.body);
+  var shoppingList = JSON.stringify(req.body);
+  let results = await CalculateShoppingList.calculateTotalCost(shoppingList);
+  res.json(results);
 };
 
 const getProductSuggestions = async (req, res) => {

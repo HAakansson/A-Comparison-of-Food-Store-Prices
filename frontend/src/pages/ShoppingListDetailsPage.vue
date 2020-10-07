@@ -94,11 +94,12 @@ export default class ShoppingListDetailsPage extends Vue {
     this.$router.push("/store-comparison-page");
     console.log(this.shoppingList);
 
-    // let results = await fetch("/rest/shoppinglists", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(this.shoppingList),
-    // });
+    let results = await fetch("/rest/shoppinglists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(this.shoppingList),
+    });
+    
   }
   mounted() {
     document.querySelector(".product-input").focus();
