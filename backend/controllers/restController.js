@@ -102,14 +102,24 @@ const getProductsById = async (req, res) => {
 const getCategories = async (req, res) => {
   //let searchString = req.query.search;
   //let search = req.query.search;
-  let result = await db.all(/*sql*/ `SELECT DISTINCT c.name
+  let result = await db.all(/*sql*/ `SELECT DISTINCT c.name,
+  CAST(LENGTH("${req.query.c}") AS FLOAT)/LENGTH(c.name) AS match_percentage
+  
   FROM Category AS c WHERE c.name LIKE "%${req.query.c}%"
-  ORDER BY c.name ASC
+  ORDER BY match_percentage DESC
   `);
   
   res.json(result);
 };
   
+// const getCategories = async (req, res) => {
+//   let results = await db.all(/*sql*/ `SELECT DISTINCT name,    
+//    CAST(LENGTH("${req.query.search}") AS FLOAT)/LENGTH(name) as match_percentage, 
+//       CASE WHEN name LIKE "${req.query.search}%"   
+//        THEN true ELSE false END firstphrase
+//        FROM Category WHERE name LIKE "%${req.query.search}%"    
+//        ORDER BY firstphrase DESC, match_percentage DESC`);
+//   res.json(results);};
 
 
 
