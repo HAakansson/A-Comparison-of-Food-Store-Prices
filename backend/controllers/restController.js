@@ -18,7 +18,7 @@ const getDietaryRestrictions = async (req, res) => {
 };
 
 const postShoppingList = async (req, res) => {
-  var shoppingList = JSON.stringify(req.body);
+  let shoppingList = JSON.stringify(req.body);
   let results = await CalculateShoppingList.calculateTotalCost(shoppingList);
   res.json(results);
 };
