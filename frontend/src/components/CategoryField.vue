@@ -1,6 +1,6 @@
 <template>
   <div class="category-field">
-      <input v-model="categorySearch" list="categories" type="text" placeholder="Sök kategori..."/>
+      <input @blur="resetInput" v-model="categorySearch" list="categories" type="text" placeholder="Sök kategori..."/>
 
     <datalist id="categories">
       <option v-for="(category, i) in categories" :key="i" :value="category.name" />
@@ -22,7 +22,6 @@ categories = null;
 
 @Watch("categorySearch")
   async onCategoryChange(value) {
-
     if (value.length < 2) { return; }
 
  clearTimeout(this.timer);
@@ -35,19 +34,21 @@ categories = null;
   }, 1200);
    
   }
+  async resetInput(){  
+    let categoryInput = this.categorySearch.toLowerCase();
+    if (categoryInput.length <= 2 && categoryInput !== "öl"){
+      this.categorySearch = "";
+       this.$store.commit("resetCategoryString");
+     this.$store.commit("updateCategoryString", this.categorySearch);
+
+    }
+  }
 
 
   async getCategories(categoryString) {
     let categoryResults = await fetch(`/rest/categories?c=${categoryString}`);
     this.categories = await categoryResults.json();
   }
-
-
-
-
-
-
-
 
 
 }
