@@ -7,7 +7,7 @@ const getProducts = async (req, res) => {
 
   console.log("SOMSA: ", req.query.c);
 
-  let reqCat = req.query.c.replace("and", " & ");
+  let reqCat = req.query.c.replace("REMOVE", " & ");
   console.log("S: ", reqCat);
   
   let searchArr = req.query.s ? req.query.s.split(" ") : null;
@@ -33,16 +33,27 @@ const getProducts = async (req, res) => {
     });
   }
 
-  let catString = catArr ? "AND c.name IN (" : "";
-  let catChecks = "";
+  let catString = "";
+  //let catString = catArr ? "AND c.name IN (" : "";
+  //let catChecks = "";
   if (catArr) {
-    catArr.forEach((c, i) => {
-      catChecks +=
-        i === catArr.length - 1
-          ? `"${c[0].toUpperCase() + c.slice(1)}"`
-          : `"${c[0].toUpperCase() + c.slice(1)}",`;
-    });
-    catString += `${catChecks})`;
+
+    catArr = catArr.charAt(0).toUpperCase() + catArr.slice(1);
+    console.log(catArr);
+    // catArr.charAt(0).toUpperCase();
+    // for (var i = 0; i < catArr.length; i++) {
+    //   catChecks += catArr.charAt(i);
+    // }
+    
+    // console.log("Car", catChecks);
+    // catArr.forEach((c, i) => {
+    //   catChecks +=
+    //     i === catArr.length - 1
+    //       ? `"${c[0].toUpperCase() + c.slice(1)}"`
+    //       : `"${c[0].toUpperCase() + c.slice(1)}",`;
+    // });
+    catString += `AND c.name IN ("${catArr}")`;
+    console.log("CatSTring ", catString);
   }
 
   let query = /*sql*/ `SELECT p.*, dr.*, i.*,
@@ -58,8 +69,11 @@ const getProducts = async (req, res) => {
     ${dietString}
     ${catString}
     ORDER BY matchedSearchString DESC`;
+   
+   let results = await db.all(query);
   
-  let results = await db.all(query);
+
+  // let results = await db.all(query);
 
   let hash = {};
   results.forEach((r) => {
@@ -67,8 +81,8 @@ const getProducts = async (req, res) => {
   });
   results = Object.values(hash);
   results.sort((a, b) => b.matchedSearchString - a.matchedSearchString);
-
   res.json(results);
+  
 };
 
 module.exports = {
