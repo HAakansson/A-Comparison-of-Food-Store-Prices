@@ -2,7 +2,7 @@
   <div class="store-summary">
     <div class="store-logo"><img :src="image" /></div>
     <div class="store-info">
-      <p class="store-sum">Total kostnad: {{ storeInfo.sum }} kr</p>
+      <p class="store-sum">Total kostnad: {{ totalCost }} kr</p>
     </div>
   </div>
 </template>
@@ -17,6 +17,10 @@ export default class StoreSummary extends Vue {
 
   get image() {
     return require(`../../assets/images/${this.storeInfo.name}.png`);
+  }
+
+  get totalCost (){
+    return this.storeInfo.sum.toFixed(2);
   }
 
   created() {

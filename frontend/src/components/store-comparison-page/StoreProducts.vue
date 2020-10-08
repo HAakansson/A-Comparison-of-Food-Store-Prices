@@ -2,7 +2,7 @@
   <div class="store-products">
     <SingleStoreProduct
       v-for="(product, i) in storeProducts"
-      :key="product.id + (2*i)"
+      :key="i"
       :product="product"
     />
   </div>
@@ -20,8 +20,6 @@ import SingleStoreProduct from "./SingleStoreProduct";
 export default class StoreProducts extends Vue {
   @Prop()
   storeProducts;
-
-  created() {}
 }
 </script>
 

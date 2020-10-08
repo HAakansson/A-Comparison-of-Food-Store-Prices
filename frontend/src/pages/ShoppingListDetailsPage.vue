@@ -91,14 +91,12 @@ export default class ShoppingListDetailsPage extends Vue {
   }
 
   async sumbitShoppingList() {
-    console.log("This.shoppinglist: ", this.shoppingList);
     let results = await fetch("/rest/shoppinglists", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this.shoppingList),
     });
     results = await results.json();
-    console.log(results);
     this.$store.commit("setStoreComparisonArray", results);
     this.$router.push("/store-comparison-page");
   }

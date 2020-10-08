@@ -8,7 +8,7 @@ module.exports = class CalculateShoppingLis_alt {
   static dbTries = 0;
 
   static async calculateTotalCost(shoppingList) {
-    let list = JSON.parse(shoppingList);
+    let list = shoppingList;
     let storeComparisonArray = [];
 
     for (let store of this.storeArray) {
@@ -22,6 +22,7 @@ module.exports = class CalculateShoppingLis_alt {
         let brandString = item.brand ? `AND brand = "${item.brand}"` : "";
         let unit = item.unit ? `AND unit_measurement = "${item.unit}"` : "";
         let storeString = `AND store = "${store}"`;
+        let amount = item.amount ? item.amount : "";
 
         let results = await this.searchDBForProducts(
           item,
@@ -34,19 +35,34 @@ module.exports = class CalculateShoppingLis_alt {
         let perfectMatches = this.findPerfectMatches(results);
 
         if (perfectMatches.length !== 0) {
-          perfectMatches = this.sortAfterComparisonPrice(perfectMatches);
+          perfectMatches = this.addTotalCostOfMultiplesOfProduct(
+            perfectMatches,
+            amount
+          );
+          perfectMatches = this.sortAfterTotalCost(perfectMatches);
         } else {
-          results = this.sortAfterComparisonPrice(results);
+          results = this.addTotalCostOfMultiplesOfProduct(results, amount);
+          results = this.sortAfterTotalCost(results);
         }
 
+        // Since the products has been sorted, the first one is the cheepest one, that one goes in to the storeObject.
         storeObject.products.push(
           perfectMatches.length > 0 ? perfectMatches[0] : results[0]
         );
       }
-      storeObject.sum = storeObject.products.reduce((sum, product) => sum + product.unit_price, 0)
+
+      // if (storeObject.name === "mathem") {
+      //   console.log(storeObject);
+      // }
+
+      storeObject.sum = storeObject.products.reduce((sum, p) => {
+        let price = p ? (p.cost ? p.cost : p.unit_price) : 0;
+        return sum + price;
+      }, 0);
+
+      console.log(storeObject);
       storeComparisonArray.push(storeObject);
     }
-
     return storeComparisonArray;
   }
 
@@ -60,16 +76,9 @@ module.exports = class CalculateShoppingLis_alt {
     return perfectMatches;
   }
 
-  static sortAfterComparisonPrice(array) {
+  static sortAfterTotalCost(array) {
     array.sort((a, b) => {
-      return (
-        (a.discount_comparison_price
-          ? a.discount_comparison_price
-          : a.comparison_price) -
-        (b.discount_comparison_price
-          ? b.discount_comparison_price
-          : b.comparison_price)
-      );
+      return a.cost - b.cost;
     });
     return array;
   }
@@ -99,7 +108,28 @@ module.exports = class CalculateShoppingLis_alt {
         : await this.searchDBForProducts(item, productString, storeString);
     } else {
       this.tries = 0;
+
       return results;
     }
+  }
+
+  static addTotalCostOfMultiplesOfProduct(array, amount) {
+    // Ta bort produkter vars mängd överstiger den efterfrågade mängden. Tex, vill vi ha en liter mjölk, ta bort alla produkter som har volymer över en liter.
+    array = array.filter((p) => {
+      return !(amount / p.display_volume < 1);
+    });
+
+    // Ta fram totalkostnaden av den efterfrågade mängden av produkten. till exempel, kostanden av två enochenhalvlitersförpackningar av mjölk när den efterfrågade mängden är tre liter mjölk.
+    array = array.map((p) => {
+      let numberOfProducts = Math.floor(amount / p.display_volume);
+      let cost = numberOfProducts * p.unit_price;
+      return {
+        ...p,
+        numberOfProducts,
+        cost,
+        amount,
+      };
+    });
+    return array;
   }
 };
