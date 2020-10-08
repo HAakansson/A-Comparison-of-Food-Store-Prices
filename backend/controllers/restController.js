@@ -23,6 +23,8 @@ const postShoppingList = async (req, res) => {
   res.json(results);
 };
 
+
+
 const getProductSuggestions = async (req, res) => {
   let value = "";
   let searchString = req.query.s;
