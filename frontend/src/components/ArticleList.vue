@@ -28,7 +28,7 @@ export default class ArticleList extends Vue {
   @Watch("$store.state.searchQueries", { deep: true, immediate: true })
   onSearchQueriesChanged(newVal) {
 
-    let newCat = newVal.categoryString.replace(/\s&\s/, "and");
+    let newCat = newVal.categoryString.replace(/\s&\s/, "REMOVE");
     let query =
       newVal.searchString + newCat + newVal.dietaryString;
 
@@ -42,10 +42,10 @@ export default class ArticleList extends Vue {
   }
 
   async searchForProduct(query) {
-
+  
     let result = await fetch(`/api/products${query}`);
     this.articles = await result.json();
-
+    
     //this.$store.state.products = result;
   }
 }
