@@ -12,9 +12,4 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
-.circle-spinner {
-  height: 150px !important;
-  width: 150px !important;
-}
-</style>
+<style lang="css" scoped></style>
