@@ -33,7 +33,8 @@
       Tillbaka till dina shoppinglistor
     </button>
     <button class="sumbit-list-button" @click="sumbitShoppingList">
-      Räkna ut din Shoppinglista
+      <Spinner v-if="showSpinnerOnButton" />
+      <span v-else>Räkna ut din Shoppinglista</span>
     </button>
   </div>
 </template>
@@ -57,6 +58,7 @@ export default class ShoppingListDetailsPage extends Vue {
   product = "";
   amount = "";
   showSpinner = false;
+  showSpinnerOnButton = false;
 
   get showBackButton() {
     return this.$route.name === "ShoppingListDetailsPage";
@@ -91,12 +93,16 @@ export default class ShoppingListDetailsPage extends Vue {
   }
 
   async sumbitShoppingList() {
+    console.log("This.shoppinglist: ", this.shoppingList);
+    this.showSpinnerOnButton = true;
     let results = await fetch("/rest/shoppinglists", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(this.shoppingList),
     });
     results = await results.json();
+    console.log(results);
+    this.showSpinnerOnButton = false;
     this.$store.commit("setStoreComparisonArray", results);
     this.$router.push("/store-comparison-page");
   }
