@@ -51,6 +51,8 @@ export default class StoreComparisonPage extends Vue {
   }
 
   mounted() {
+    console.log(this.$store.state.storeComparisonArray);
+
     window.addEventListener("scroll", this.handleScroll);
   }
 
@@ -62,6 +64,7 @@ export default class StoreComparisonPage extends Vue {
 
 <style lang="scss" scoped>
 .store-comparison-page {
+  margin-bottom: 2em;
   padding: 2em;
   .store-summary-container,
   .store-details-container {

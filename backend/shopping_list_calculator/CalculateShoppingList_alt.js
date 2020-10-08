@@ -1,10 +1,9 @@
-const e = require("express");
 const path = require("path");
 const DB = require("../DB");
 const dbPath = path.join(__dirname, "../databases/foodStore.db");
 const db = new DB(dbPath);
 
-module.exports = class CalculateShoppingList {
+module.exports = class CalculateShoppingLis_alt {
   static storeArray = ["willys", "hemkop", "mathem"];
   static dbTries = 0;
 
@@ -15,7 +14,7 @@ module.exports = class CalculateShoppingList {
     for (let store of this.storeArray) {
       let storeObject = {
         name: store,
-        sum: null,
+        sum: 0,
         products: [],
       };
       for (let item of list) {
@@ -27,8 +26,8 @@ module.exports = class CalculateShoppingList {
         let results = await this.searchDBForProducts(
           item,
           productString,
-          unit,
           storeString,
+          unit,
           brandString
         );
 
@@ -44,6 +43,7 @@ module.exports = class CalculateShoppingList {
           perfectMatches.length > 0 ? perfectMatches[0] : results[0]
         );
       }
+      storeObject.sum = storeObject.products.reduce((sum, product) => sum + product.unit_price, 0)
       storeComparisonArray.push(storeObject);
     }
 
@@ -77,8 +77,8 @@ module.exports = class CalculateShoppingList {
   static async searchDBForProducts(
     item,
     productString,
-    unit,
     storeString,
+    unit = "",
     brandString = ""
   ) {
     let results = await db.all(/*sql*/ `
@@ -94,9 +94,9 @@ module.exports = class CalculateShoppingList {
 
     if (results.length === 0) {
       this.tries++;
-      return this.tries > 2
+      return this.tries > 1
         ? []
-        : await this.searchDBForProducts(item, productString, unit, storeString);
+        : await this.searchDBForProducts(item, productString, storeString);
     } else {
       this.tries = 0;
       return results;

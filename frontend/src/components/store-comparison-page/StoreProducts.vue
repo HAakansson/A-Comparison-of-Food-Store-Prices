@@ -1,8 +1,8 @@
 <template>
   <div class="store-products">
     <SingleStoreProduct
-      v-for="product in storeProducts"
-      :key="product.id"
+      v-for="(product, i) in storeProducts"
+      :key="product.id + (2*i)"
       :product="product"
     />
   </div>
@@ -21,9 +21,7 @@ export default class StoreProducts extends Vue {
   @Prop()
   storeProducts;
 
-  created(){
-    console.log(this.storeProducts);
-  }
+  created() {}
 }
 </script>
 

@@ -91,6 +91,7 @@ export default class ShoppingListDetailsPage extends Vue {
   }
 
   async sumbitShoppingList() {
+    console.log("This.shoppinglist: ", this.shoppingList);
     let results = await fetch("/rest/shoppinglists", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
