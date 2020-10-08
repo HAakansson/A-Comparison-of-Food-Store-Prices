@@ -16,17 +16,20 @@ module.exports = class DataBaseHelper {
   static async insertCategoryToDB(category) {
     await db.run(
       /*sql*/ `
-          INSERT INTO Category (name, url, store, categoryCode) VALUES ($name, $url, $store, $categoryCode)
+          INSERT INTO Category (name, url, store, categoryCode, rank, parent) VALUES ($name, $url, $store, $categoryCode, $rank, $parent)
         `,
       {
         $name: category.name,
         $url: category.url,
         $store: category.store,
         $categoryCode: category.categoryCode,
+        $rank: category.rank,
+        $parent: category.parent
       }
     );
   }
-static async getAllProducts(store){
+
+  static async getAllProducts(store){
   let products = await db.all(/*sql*/ `SELECT * FROM Product WHERE store = $store`,
   {
     $store: store.split(".")[1]

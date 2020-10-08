@@ -9,7 +9,6 @@
   </div>
 </template>
 
-
 <script>
 import { Vue, Component, Watch } from "vue-property-decorator";
 
@@ -53,15 +52,12 @@ categories = null;
 
 
 }
-
 </script>
 
 <style scoped>
-
 input {
   width: 100%;
   height: 30px;
   font-size: 14px;
 }
-
 </style>

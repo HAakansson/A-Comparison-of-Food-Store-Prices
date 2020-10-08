@@ -1,25 +1,17 @@
 <template>
-<div>
-<ProductPage/>
-</div>
+  <div>
+    <ProductPage />
+  </div>
 </template>
 
 <script>
 import { Vue, Component } from "vue-property-decorator";
-import ProductPage from "../components/ProductPage"
+import ProductPage from "../components/ProductPage";
 
 @Component({
   components: {
-    ProductPage
-      
-  }
+    ProductPage,
+  },
 })
-
-export default class ArticlePage extends Vue {
-
-
-
-}
-
-
+export default class ArticlePage extends Vue {}
 </script>

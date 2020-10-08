@@ -2,7 +2,7 @@ const DB = require("../DB");
 const path = require("path");
 const dbPath = path.join(__dirname, "../databases/foodStore.db");
 const db = new DB(dbPath);
-const CalculateShoppingList = require("../shopping_list_calculator/CalculateShoppingList");
+const CalculateShoppingList = require("../shopping_list_calculator/CalculateShoppingList_alt");
 
 function removeDoubletBrands(array) {
   let hash = {};
@@ -20,9 +20,12 @@ const getDietaryRestrictions = async (req, res) => {
 };
 
 const postShoppingList = async (req, res) => {
-  //var jsonList = JSON.stringify(req.body);
-  CalculateShoppingList.calculateTotalCost(req.body);
+  let shoppingList = req.body;
+  let results = await CalculateShoppingList.calculateTotalCost(shoppingList);
+  res.json(results);
 };
+
+
 
 const getProductSuggestions = async (req, res) => {
   let value = "";
@@ -190,13 +193,26 @@ const deleteRowFromList = async (req, res) => {
 };
 
 const deleteShoppingList = async (req, res) => {
-  let result = await db.run(
+  let results1 = await db.run(
     /*sql*/ `DELETE FROM ShoppingLists WHERE id = $id`,
     {
       $id: req.params.shoppingListId,
     }
   );
-  res.json(result.changes);
+
+  let results2 = await db.run(
+    /*sql*/ `DELETE FROM ShoppingListItems WHERE shoppingListId = $shoppingListId`,
+    {
+      $shoppingListId: req.params.shoppingListId,
+    }
+  );
+
+  let results = {
+    result1: results1.changes,
+    result2: results2.changes,
+  };
+
+  res.json(results);
 };
 
 module.exports = {
