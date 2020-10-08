@@ -4,9 +4,16 @@ const dbPath = path.join(__dirname, "../databases/foodStore.db");
 const db = new DB(dbPath);
 
 const getProducts = async (req, res) => {
+
+  console.log("SOMSA: ", req.query.c);
+
+  let reqCat = req.query.c.replace("and", " & ");
+  console.log("S: ", reqCat);
+  
   let searchArr = req.query.s ? req.query.s.split(" ") : null;
   let dietArr = req.query.d ? req.query.d.split(",") : null;
-  let catArr = req.query.c ? req.query.c.split(",") : null;
+  let catArr = reqCat ? reqCat : null;
+
 
   let searchString = "";
   if (searchArr) {
@@ -51,7 +58,7 @@ const getProducts = async (req, res) => {
     ${dietString}
     ${catString}
     ORDER BY matchedSearchString DESC`;
-
+  
   let results = await db.all(query);
 
   let hash = {};
@@ -59,7 +66,6 @@ const getProducts = async (req, res) => {
     hash[r.id] = r;
   });
   results = Object.values(hash);
-
   results.sort((a, b) => b.matchedSearchString - a.matchedSearchString);
 
   res.json(results);

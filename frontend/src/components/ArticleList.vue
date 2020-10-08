@@ -27,8 +27,10 @@ export default class ArticleList extends Vue {
 
   @Watch("$store.state.searchQueries", { deep: true, immediate: true })
   onSearchQueriesChanged(newVal) {
+
+    let newCat = newVal.categoryString.replace(/\s&\s/, "and");
     let query =
-      newVal.searchString + newVal.categoryString + newVal.dietaryString;
+      newVal.searchString + newCat + newVal.dietaryString;
 
     if (query === "?s=&c=&d=") { return; }
     if (newVal.searchString === "?s=") { newVal.searchString = "?s= "; }

@@ -19,18 +19,19 @@ export default class CategoryField extends Vue {
 categorySearch = "";
 categories = null;
 
-
+// TODO: när man raderar kategori fältet ska den söka med tomt....
 @Watch("categorySearch")
   async onCategoryChange(value) {
     if (value.length < 2) { return; }
 
- clearTimeout(this.timer);
+    clearTimeout(this.timer);
     this.timer = setTimeout( async () => {
     
     await this.getCategories(value);
   
     this.$store.commit("resetCategoryString");
     this.$store.commit("updateCategoryString", value);
+
   }, 1200);
    
   }
