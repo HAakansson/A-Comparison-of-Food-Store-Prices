@@ -19,11 +19,15 @@ module.exports = class MatHemScrubber extends Scrubber {
     comparison_price: (x) => x.comparisonPrice,
     comparator: (x) => x.comparisonUnit,
     lactosefree: (x) => {
+      return x.fullName.includes("Laktosfri");
+      /*
       return x.badges.length > 0
         ? x.badges.some((y) => {
             return y.name === "Laktosfri";
           })
-        : false;
+        : x.fullName.includes("Laktosfri") ? true : false;
+        //: false;
+        */
     },
     organic: (x) => {
       return x.badges.length > 0

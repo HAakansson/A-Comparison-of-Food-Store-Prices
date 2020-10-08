@@ -18,9 +18,44 @@ const getDietaryRestrictions = async (req, res) => {
 };
 
 const postShoppingList = async (req, res) => {
-  //var jsonList = JSON.stringify(req.body);
-  CalculateShoppingList.calculateTotalCost(req.body);
+
+  /*
+    recieves a list in req.body, find the equilavent goods and return them here
+    et milks = {mathem: 621, willys: 11856, hemkop: 22125};
+  [
+      {"amount": 1,
+      "brand": "Arla Ko",
+      "id":50,
+      "product": "Färsk Standardmjölk 3% 1L Arla",
+      "productId": 621,
+      "shoppingListId": 21,
+      "unit": "l"},
+      {"amount": 1,
+      "brand": "Garant",
+      "id":50,
+      "product": "Mjölk Standard 3%",
+      "productId": 11856,
+      "shoppingListId": 21,
+      "unit": "l"},
+      {"amount": 1,
+      "brand": "Arla Ko",
+      "id":50,
+      "product": "Standardmjölk 3%",
+      "productId": 22125,
+      "shoppingListId": 21,
+      "unit": "l"}
+  ]
+  */
+
+
+  let data = req.body;
+
+  let response = await CalculateShoppingList.calculateTotalCost(data);
+
+  res.json(response);
 };
+
+
 
 const getProductSuggestions = async (req, res) => {
   let value = "";
@@ -86,6 +121,7 @@ const getBrandSuggestions = async (req, res) => {
 };
 
 const getProductsById = async (req, res) => {
+  
   let result = await db.all(/*sql*/ `SELECT * FROM Product WHERE ${req.params.productId} = id`)
 
   res.json(result);
@@ -108,5 +144,6 @@ module.exports = {
   getDietaryRestrictions,
   postShoppingList,
   getBrandSuggestions,
-  getProductsById
+  getProductsById,
+  //getEquilaventProducts
 };
