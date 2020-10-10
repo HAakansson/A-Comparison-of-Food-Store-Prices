@@ -2,13 +2,14 @@
   <div class="store-summary">
     <div class="store-logo"><img :src="image" /></div>
     <div class="store-info">
-      <p class="store-sum">Total kostnad: {{ totalCost }} kr</p>
+      <p class="store-sum">Total kostnad: {{ totalCost }}</p>
     </div>
   </div>
 </template>
 
 <script>
 import { Vue, Component, Prop } from "vue-property-decorator";
+import CurrencyConverter from "../../assets/CurrencyConverter";
 
 @Component
 export default class StoreSummary extends Vue {
@@ -19,8 +20,8 @@ export default class StoreSummary extends Vue {
     return require(`../../assets/images/${this.storeInfo.name}.png`);
   }
 
-  get totalCost (){
-    return this.storeInfo.sum.toFixed(2);
+  get totalCost() {
+    return CurrencyConverter.convertToSwedishCurr(this.storeInfo.sum.toFixed(2));
   }
 
   created() {

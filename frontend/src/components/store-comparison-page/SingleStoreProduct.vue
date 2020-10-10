@@ -10,7 +10,7 @@
       <div class="product-info-container">
         <span class="product-text name">{{ name }}</span>
         <span class="product-text brand">{{ product.brand }}</span>
-        <span class="product-text price">Styckpris: {{ price }} kr</span>
+        <span class="product-text price">Styckpris: {{ price }}</span>
         <span v-if="amount > 0" class="product-text amount"
           >Önskad mängd: {{ amount }} {{ rawUnitMeasurement }}</span
         >
@@ -18,10 +18,10 @@
           >Förpackningsmängd: {{ productVolume }} {{ rawUnitMeasurement }}</span
         >
         <span class="product-text totalCost"
-          >{{ requestedQuantity }} st, {{ totalCost }} kr</span
+          >{{ requestedQuantity }} st, {{ totalCost }}</span
         >
         <span class="product-text comparison"
-          >Jmf-pris: {{ comparisonPrice }} kr / {{ unitMeasurement }}</span
+          >Jmf-pris: {{ comparisonPrice }} / {{ unitMeasurement }}</span
         >
       </div>
     </div>
@@ -30,6 +30,7 @@
 
 <script>
 import { Vue, Component, Prop } from "vue-property-decorator";
+import CurrencyConverter from "../../assets/CurrencyConverter";
 
 @Component
 export default class SingleStoreProduct extends Vue {
@@ -45,20 +46,24 @@ export default class SingleStoreProduct extends Vue {
   }
 
   get price() {
-    return this.product ? this.product.unit_price : 0;
+    return CurrencyConverter.convertToSwedishCurr(
+      this.product ? this.product.unit_price : 0
+    );
   }
 
-  get discountPrice() {
-    return this.product ? this.product.discount : null;
-  }
+  // get discountPrice() {
+  //   return CurrencyConverter.convertToSwedishCurr(this.product ? this.product.discount : null);
+  // }
 
   get comparisonPrice() {
-    return this.product ? this.product.comparison_price : 0;
+    return CurrencyConverter.convertToSwedishCurr(
+      this.product ? this.product.comparison_price : 0
+    );
   }
 
-  get comparisonDiscountPrice() {
-    return this.product ? this.product.discount_comparison_price : null;
-  }
+  // get comparisonDiscountPrice() {
+  //   return this.product ? this.product.discount_comparison_price : null;
+  // }
 
   get unitMeasurement() {
     // if (true) {
@@ -96,11 +101,11 @@ export default class SingleStoreProduct extends Vue {
   }
 
   get totalCost() {
-    return this.product
+    return CurrencyConverter.convertToSwedishCurr(this.product
       ? this.product.cost
         ? this.product.cost.toFixed(2)
         : this.product.unit_price
-      : 0;
+      : 0);
   }
 
   get amount() {
